@@ -1,0 +1,108 @@
+package com.wx.wheelview;
+
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+
+import java.util.List;
+
+/**
+ * 滚轮抽象数据适配器
+ *
+ * @author fengwx
+ */
+public abstract class BaseWheelAdapter<T> extends BaseAdapter {
+
+    protected List<T> mList = null;
+
+    protected boolean mLoop = IWheelView.LOOP;
+
+    protected int mWheelSize = IWheelView.WHEEL_SIZE;
+
+    protected abstract View bindView(int position, View convertView, ViewGroup parent);
+
+    @Override
+    public final int getCount() {
+        if (mLoop) {
+            return Integer.MAX_VALUE;
+        }
+        return (mList != null) ? (mList.size() + mWheelSize - 1) : 0;
+    }
+
+    @Override
+    public final long getItemId(int position) {
+        return (mList != null) ? position % mList.size() : position;
+    }
+
+    @Override
+    public final Object getItem(int position) {
+        return (mList != null) ? mList.get(position % mList.size()) : null;
+    }
+
+    @Override
+    public final View getView(int position, View convertView, ViewGroup parent) {
+        if (mLoop) {
+            position = position % mList.size();
+        } else {
+            if (position < mWheelSize / 2) {
+                position = -1;
+            } else if (position >= mWheelSize / 2 + mList.size()) {
+                position = -1;
+            } else {
+                position = position - mWheelSize / 2;
+            }
+        }
+        View view;
+        if (position == -1) {
+            view = bindView(0, convertView, parent);
+        } else {
+            view = bindView(position, convertView, parent);
+        }
+        if (!mLoop) {
+            if (position == -1) {
+                view.setVisibility(View.INVISIBLE);
+            } else {
+                view.setVisibility(View.VISIBLE);
+            }
+        }
+        return view;
+    }
+
+    public final BaseWheelAdapter setLoop(boolean loop) {
+        if (loop != mLoop) {
+            mLoop = loop;
+            super.notifyDataSetChanged();
+        }
+        return this;
+    }
+
+    public final BaseWheelAdapter setWheelSize(int wheelSize) {
+        mWheelSize = wheelSize;
+        super.notifyDataSetChanged();
+        return this;
+    }
+
+    public final BaseWheelAdapter setData(List<T> list) {
+        mList = list;
+        super.notifyDataSetChanged();
+        return this;
+    }
+
+    /**
+     * 数据已改变，重绘可见区域
+     */
+    @Override
+    @Deprecated
+    public final void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+    }
+
+    /**
+     * 数据失效，重绘控件
+     */
+    @Override
+    @Deprecated
+    public final void notifyDataSetInvalidated() {
+        super.notifyDataSetInvalidated();
+    }
+}
