@@ -5,9 +5,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +39,10 @@ public class WheelView<T> extends ListView implements IWheelView {
     private boolean mLoop = LOOP;   // 是否循环滚动
     private List<T> mList = null;   // 滚轮数据列表
     private int mCurrentPositon = -1;    // 记录滚轮当前刻度
-    private String mExtraText;  // 添加滚轮选中位置文本
+    private String mExtraText;  // 添加滚轮选中位置附加文本
+    private int mExtraTextColor;    // 附加文本颜色
+    private int mExtraTextSize; // 附加文本大小
+    private int mExtraMargin;   // 附加文本外边距
 
     private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
             SHADOWS_COLORS);    // 顶部阴影
@@ -430,12 +435,18 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
-     * 设置选中行文本
+     * 设置选中行附加文本
      *
-     * @param s
+     * @param text
+     * @param textColor
+     * @param textSize
+     * @param margin
      */
-    public void setExtraText(String s) {
-        mExtraText = s;
+    public void setExtraText(String text, int textColor, int textSize, int margin) {
+        mExtraText = text;
+        mExtraTextColor = textColor;
+        mExtraTextSize = textSize;
+        mExtraMargin = margin;
     }
 
     /**
@@ -524,6 +535,17 @@ public class WheelView<T> extends ListView implements IWheelView {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
+        if (!TextUtils.isEmpty(mExtraText)) {
+            Rect targetRect = new Rect(0, mItemH * (mWheelSize / 2), getWidth(), mItemH * (mWheelSize / 2 + 1));
+            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            paint.setTextSize(mExtraTextSize);
+            paint.setColor(mExtraTextColor);
+            Paint.FontMetricsInt fontMetrics = paint.getFontMetricsInt();
+            int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+            paint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(mExtraText, targetRect.centerX() + mExtraMargin, baseline, paint);
+        }
+
         if (mSkin.equals(Skin.Common)) {
             if (mItemH == 0) {
                 return;
@@ -535,11 +557,11 @@ public class WheelView<T> extends ListView implements IWheelView {
             mBottomShadow.setBounds(0, getHeight() - height, getWidth(), getHeight());
             mBottomShadow.draw(canvas);
 
-            Paint paint = new Paint();
-            paint.setStrokeWidth(6);
-            paint.setColor(Color.parseColor("#666666"));
-            canvas.drawLine(0, 0, 0, getHeight(), paint);
-            canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), paint);
+            Paint paint1 = new Paint();
+            paint1.setStrokeWidth(6);
+            paint1.setColor(Color.parseColor("#666666"));
+            canvas.drawLine(0, 0, 0, getHeight(), paint1);
+            canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), paint1);
         }
     }
 

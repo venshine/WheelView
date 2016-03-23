@@ -58,7 +58,7 @@ public class MainActivity extends Activity {
         wheelView2.setWheelSize(5);
         wheelView2.setWheelData(createArrays());
         wheelView2.setLoop(true);
-        wheelView2.setExtraText("文本");
+        wheelView2.setExtraText("文本", Color.RED, 40, 120);
         wheelView2.setSkin(WheelView.Skin.Holo);
         WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
         style.textColor = Color.BLACK;
