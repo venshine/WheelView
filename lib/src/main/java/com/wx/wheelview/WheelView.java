@@ -36,8 +36,8 @@ public class WheelView<T> extends ListView implements IWheelView {
     private int mWheelSize = WHEEL_SIZE;    // 滚轮个数
     private boolean mLoop = LOOP;   // 是否循环滚动
     private List<T> mList = null;   // 滚轮数据列表
-    private int mCurrentPositon = 0;    // 记录滚轮当前刻度
-    private int mSelection = 0; // 滚轮选中刻度
+    private int mCurrentPositon = -1;    // 记录滚轮当前刻度
+    private String mExtraText;  // 添加滚轮选中位置文本
 
     private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
             SHADOWS_COLORS);    // 顶部阴影
@@ -60,7 +60,7 @@ public class WheelView<T> extends ListView implements IWheelView {
                 View itemView = getChildAt(0);
                 if (itemView != null) {
                     float deltaY = itemView.getY();
-                    if (deltaY == 0) {
+                    if (deltaY == 0 || mItemH == 0) {
                         return;
                     }
                     if (Math.abs(deltaY) < mItemH / 2) {
@@ -71,15 +71,14 @@ public class WheelView<T> extends ListView implements IWheelView {
                         smoothScrollBy(d, WheelConstants.WHEEL_SMOOTH_SCROLL_DURATION);
                     }
                 }
-            } else if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-            } else if (scrollState == SCROLL_STATE_FLING) {
             }
         }
 
         @Override
         public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//            WheelUtils.log("onScroll:" + firstVisibleItem + ", " + visibleItemCount + ", " + totalItemCount);
-            refreshCurrentPosition();
+            if (visibleItemCount != 0) {
+                refreshCurrentPosition();
+            }
         }
     };
 
@@ -126,7 +125,11 @@ public class WheelView<T> extends ListView implements IWheelView {
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
                 if (getChildCount() > 0 && mItemH == 0) {
                     mItemH = getChildAt(0).getHeight();
                     if (mItemH != 0) {
@@ -199,10 +202,12 @@ public class WheelView<T> extends ListView implements IWheelView {
                 dividerPaint.setColor(mStyle.holoBorderColor != -1 ? mStyle.holoBorderColor : WheelConstants
                         .WHEEL_SKIN_HOLO_BORDER_COLOR);
                 dividerPaint.setStrokeWidth(3);
-                canvas.drawLine(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
-                        * (mWheelSize / 2), dividerPaint);
-                canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), viewWidth, mItemH
-                        * (mWheelSize / 2 + 1), dividerPaint);
+                if (mItemH != 0) {
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
+                            * (mWheelSize / 2), dividerPaint);
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), viewWidth, mItemH
+                            * (mWheelSize / 2 + 1), dividerPaint);
+                }
             }
 
             @Override
@@ -245,12 +250,14 @@ public class WheelView<T> extends ListView implements IWheelView {
                 dividerPaint.setStrokeWidth(2);
                 Paint seletedSolidPaint = new Paint();
                 seletedSolidPaint.setColor(Color.parseColor("#f0cfcfcf"));
-                canvas.drawRect(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
-                        * (mWheelSize / 2 + 1), seletedSolidPaint);
-                canvas.drawLine(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
-                        * (mWheelSize / 2), dividerPaint);
-                canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), viewWidth, mItemH
-                        * (mWheelSize / 2 + 1), dividerPaint);
+                if (mItemH != 0) {
+                    canvas.drawRect(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
+                            * (mWheelSize / 2 + 1), seletedSolidPaint);
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
+                            * (mWheelSize / 2), dividerPaint);
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), viewWidth, mItemH
+                            * (mWheelSize / 2 + 1), dividerPaint);
+                }
             }
 
             @Override
@@ -318,6 +325,7 @@ public class WheelView<T> extends ListView implements IWheelView {
     public void setLoop(boolean loop) {
         if (loop != mLoop) {
             mLoop = loop;
+            setSelection(0);
             if (mBaseWheelAdapter != null) {
                 mBaseWheelAdapter.setLoop(loop);
             }
@@ -331,13 +339,15 @@ public class WheelView<T> extends ListView implements IWheelView {
      */
     @Override
     public void setSelection(final int selection) {
-        mSelection = selection;
-        post(new Runnable() {
+        setVisibility(View.INVISIBLE);
+        WheelView.this.postDelayed(new Runnable() {
             @Override
             public void run() {
                 WheelView.super.setSelection(getRealPosition(selection));
+                refreshCurrentPosition();
+                setVisibility(View.VISIBLE);
             }
-        });
+        }, 200);
     }
 
     /**
@@ -350,7 +360,7 @@ public class WheelView<T> extends ListView implements IWheelView {
         }
         if (mLoop) {
             int d = Integer.MAX_VALUE / 2 / mList.size();
-            return (positon + d * mList.size()) % getWheelCount();
+            return positon + d * mList.size() - mWheelSize / 2;
         }
         return positon;
     }
@@ -420,6 +430,15 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
+     * 设置选中行文本
+     *
+     * @param s
+     */
+    public void setExtraText(String s) {
+        mExtraText = s;
+    }
+
+    /**
      * 获得wheel数据总数
      *
      * @return
@@ -445,21 +464,25 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
-     * 滚动时刷新当前位置
+     * 刷新当前位置
      */
     private void refreshCurrentPosition() {
-        int firstPosition = getFirstVisiblePosition();
-        int position = 0;
-        if (getChildAt(0) == null) {
+        if (getChildAt(0) == null || mItemH == 0) {
             return;
         }
-        if (Math.abs(getChildAt(0).getY()) <= mItemH / 2) {
-            position = firstPosition + mSelection;
-        } else {
-            position = firstPosition + mSelection + 1;
+        int firstPosition = getFirstVisiblePosition();
+        if (mLoop && firstPosition == 0) {
+            return;
         }
+        int position = 0;
+        if (Math.abs(getChildAt(0).getY()) <= mItemH / 2) {
+            position = firstPosition;
+        } else {
+            position = firstPosition + 1;
+        }
+        refreshVisibleItems(firstPosition, position + mWheelSize / 2, mWheelSize / 2);
         if (mLoop) {
-            position = position % getWheelCount();
+            position = (position + mWheelSize / 2) % getWheelCount();
         }
         if (position == mCurrentPositon) {
             return;
@@ -468,7 +491,6 @@ public class WheelView<T> extends ListView implements IWheelView {
         if (mOnWheelItemSelectedListener != null) {
             mOnWheelItemSelectedListener.onItemSelected(getCurrentPosition(), getSelectionItem());
         }
-        refreshVisibleItems(firstPosition, position + mWheelSize / 2, mWheelSize / 2);
     }
 
     /**
@@ -484,13 +506,13 @@ public class WheelView<T> extends ListView implements IWheelView {
             if (itemView == null) {
                 continue;
             }
-            TextView labelTv = (TextView) itemView.findViewWithTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
+            TextView textView = (TextView) itemView.findViewWithTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
             if (curPosition == i) { // 选中
-                labelTv.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
+                textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
                         -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR));
                 itemView.setAlpha(1f);
             } else {    // 未选中
-                labelTv.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR);
+                textView.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR);
                 int delta = Math.abs(i - curPosition);
                 double alpha = Math.pow(0.7f, delta);
                 itemView.setAlpha((float) alpha);
@@ -503,6 +525,9 @@ public class WheelView<T> extends ListView implements IWheelView {
         super.dispatchDraw(canvas);
 
         if (mSkin.equals(Skin.Common)) {
+            if (mItemH == 0) {
+                return;
+            }
             int height = mItemH;
             mTopShadow.setBounds(0, 0, getWidth(), height);
             mTopShadow.draw(canvas);

@@ -1,5 +1,6 @@
 package com.wx.wheelview;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.util.Collection;
@@ -19,7 +20,9 @@ public class WheelUtils {
      * @param msg
      */
     public static void log(String msg) {
-        Log.d(TAG, msg);
+        if (!TextUtils.isEmpty(msg)) {
+            Log.d(TAG, msg);
+        }
     }
 
     /**

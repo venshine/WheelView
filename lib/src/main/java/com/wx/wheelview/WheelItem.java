@@ -49,6 +49,7 @@ public class WheelItem extends LinearLayout {
         mImage.setTag(WheelConstants.WHEEL_ITEM_IMAGE_TAG);
         mImage.setVisibility(View.GONE);
         LayoutParams imageParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        imageParams.rightMargin = WheelConstants.WHEEL_ITEM_MARGIN;
         addView(mImage, imageParams);
 
         // 文本
@@ -57,8 +58,8 @@ public class WheelItem extends LinearLayout {
         mText.setSingleLine();
         mText.setTextColor(Color.BLACK);
         LayoutParams textParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
-        textParams.leftMargin = WheelConstants.WHEEL_ITEM_MARGIN;
         addView(mText, textParams);
+
     }
 
     /**
