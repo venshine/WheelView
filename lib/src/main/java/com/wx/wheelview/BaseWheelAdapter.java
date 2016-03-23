@@ -26,17 +26,17 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
         if (mLoop) {
             return Integer.MAX_VALUE;
         }
-        return (mList != null) ? (mList.size() + mWheelSize - 1) : 0;
+        return !WheelUtils.isEmpty(mList) ? (mList.size() + mWheelSize - 1) : 0;
     }
 
     @Override
     public final long getItemId(int position) {
-        return (mList != null) ? position % mList.size() : position;
+        return !WheelUtils.isEmpty(mList) ? position % mList.size() : position;
     }
 
     @Override
     public final Object getItem(int position) {
-        return (mList != null) ? mList.get(position % mList.size()) : null;
+        return !WheelUtils.isEmpty(mList) ? mList.get(position % mList.size()) : null;
     }
 
     @Override

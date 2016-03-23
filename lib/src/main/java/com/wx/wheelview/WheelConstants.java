@@ -35,6 +35,11 @@ public class WheelConstants {
     public static final int WHEEL_SMOOTH_SCROLL_DURATION = 50;
 
     /**
+     * 默认背景
+     */
+    public static final int WHEEL_BG = Color.WHITE;
+
+    /**
      * common皮肤默认背景
      */
     public static final int WHEEL_SKIN_COMMON_BG = Color.parseColor("#dddddd");
@@ -42,7 +47,7 @@ public class WheelConstants {
     /**
      * holo皮肤默认背景
      */
-    public static final int WHEEL_SKIN_HOLO_BG = Color.parseColor("#ffffff");
+    public static final int WHEEL_SKIN_HOLO_BG = Color.WHITE;
 
     /**
      * holo皮肤默认选中框颜色

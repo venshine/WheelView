@@ -26,28 +26,24 @@ import java.util.List;
  */
 public class WheelView<T> extends ListView implements IWheelView {
 
-    private int mItemH = 0; // 每一项高度
-
-    private int mWheelSize = WHEEL_SIZE;    // 滚轮个数
-
-    private boolean mLoop = LOOP;   // 是否循环滚动
-
-    private List<T> mList = null;   // 滚轮数据列表
-
-    private int mCurrentPositon = 0;    // 记录滚轮当前刻度
-
-    private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-            SHADOWS_COLORS);    // 顶部阴影
-    ;
-    private GradientDrawable mBottomShadow = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
-            SHADOWS_COLORS);    // 底部阴影
-    ;
     private static final int[] SHADOWS_COLORS =
             {
                     0xFF111111,
                     0x00AAAAAA,
                     0x00AAAAAA
             };  // 阴影色值
+    private int mItemH = 0; // 每一项高度
+    private int mWheelSize = WHEEL_SIZE;    // 滚轮个数
+    private boolean mLoop = LOOP;   // 是否循环滚动
+    private List<T> mList = null;   // 滚轮数据列表
+    private int mCurrentPositon = 0;    // 记录滚轮当前刻度
+    private int mSelection = 0; // 滚轮选中刻度
+
+    private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+            SHADOWS_COLORS);    // 顶部阴影
+
+    private GradientDrawable mBottomShadow = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+            SHADOWS_COLORS);    // 底部阴影
 
     private Skin mSkin = Skin.None; // 皮肤风格
 
@@ -57,13 +53,35 @@ public class WheelView<T> extends ListView implements IWheelView {
 
     private OnWheelItemSelectedListener<T> mOnWheelItemSelectedListener;
 
-    public void setOnWheelItemSelectedListener(OnWheelItemSelectedListener<T> onWheelItemSelectedListener) {
-        mOnWheelItemSelectedListener = onWheelItemSelectedListener;
-    }
+    private OnScrollListener onScrollListener = new OnScrollListener() {
+        @Override
+        public void onScrollStateChanged(AbsListView view, int scrollState) {
+            if (scrollState == SCROLL_STATE_IDLE) {
+                View itemView = getChildAt(0);
+                if (itemView != null) {
+                    float deltaY = itemView.getY();
+                    if (deltaY == 0) {
+                        return;
+                    }
+                    if (Math.abs(deltaY) < mItemH / 2) {
+                        int d = getSmoothDistance(deltaY);
+                        smoothScrollBy(d, WheelConstants.WHEEL_SMOOTH_SCROLL_DURATION);
+                    } else {
+                        int d = getSmoothDistance(mItemH + deltaY);
+                        smoothScrollBy(d, WheelConstants.WHEEL_SMOOTH_SCROLL_DURATION);
+                    }
+                }
+            } else if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
+            } else if (scrollState == SCROLL_STATE_FLING) {
+            }
+        }
 
-    public enum Skin { // 滚轮皮肤
-        Common, Holo, None
-    }
+        @Override
+        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//            WheelUtils.log("onScroll:" + firstVisibleItem + ", " + visibleItemCount + ", " + totalItemCount);
+            refreshCurrentPosition();
+        }
+    };
 
     public WheelView(Context context) {
         super(context);
@@ -84,6 +102,10 @@ public class WheelView<T> extends ListView implements IWheelView {
     public WheelView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
+    }
+
+    public void setOnWheelItemSelectedListener(OnWheelItemSelectedListener<T> onWheelItemSelectedListener) {
+        mOnWheelItemSelectedListener = onWheelItemSelectedListener;
     }
 
     /**
@@ -121,21 +143,21 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
-     * 设置滚轮样式
-     *
-     * @param style
-     */
-    public void setStyle(WheelViewStyle style) {
-        mStyle = style;
-    }
-
-    /**
      * 获得滚轮样式
      *
      * @return
      */
     public WheelViewStyle getStyle() {
         return mStyle;
+    }
+
+    /**
+     * 设置滚轮样式
+     *
+     * @param style
+     */
+    public void setStyle(WheelViewStyle style) {
+        mStyle = style;
     }
 
     /**
@@ -146,7 +168,16 @@ public class WheelView<T> extends ListView implements IWheelView {
             drawCommonBg();
         } else if (mSkin.equals(Skin.Holo)) {
             drawHoloBg();
+        } else if (mSkin.equals(Skin.None)) {
+            drawBg();
         }
+    }
+
+    /**
+     * 背景
+     */
+    private void drawBg() {
+        setBackgroundColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants.WHEEL_BG);
     }
 
     /**
@@ -243,6 +274,15 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
+     * 获得皮肤风格
+     *
+     * @return
+     */
+    public Skin getSkin() {
+        return mSkin;
+    }
+
+    /**
      * 设置皮肤风格
      *
      * @param skin
@@ -250,15 +290,6 @@ public class WheelView<T> extends ListView implements IWheelView {
     public void setSkin(Skin skin) {
         mSkin = skin;
         setBackground();
-    }
-
-    /**
-     * 获得皮肤风格
-     *
-     * @return
-     */
-    public Skin getSkin() {
-        return mSkin;
     }
 
     /**
@@ -296,15 +327,15 @@ public class WheelView<T> extends ListView implements IWheelView {
     /**
      * 设置滚轮位置
      *
-     * @param position
+     * @param selection
      */
     @Override
-    public void setSelection(final int position) {
+    public void setSelection(final int selection) {
+        mSelection = selection;
         post(new Runnable() {
             @Override
             public void run() {
-                mCurrentPositon = getRealPosition(position);
-                WheelView.super.setSelection(mCurrentPositon);
+                WheelView.super.setSelection(getRealPosition(selection));
             }
         });
     }
@@ -314,12 +345,12 @@ public class WheelView<T> extends ListView implements IWheelView {
      * @return
      */
     private int getRealPosition(int positon) {
-        if (mList == null || mList.size() == 0) {
+        if (WheelUtils.isEmpty(mList)) {
             return 0;
         }
         if (mLoop) {
             int d = Integer.MAX_VALUE / 2 / mList.size();
-            return positon + d * mList.size();
+            return (positon + d * mList.size()) % getWheelCount();
         }
         return positon;
     }
@@ -389,6 +420,15 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
+     * 获得wheel数据总数
+     *
+     * @return
+     */
+    public int getWheelCount() {
+        return !WheelUtils.isEmpty(mList) ? mList.size() : 0;
+    }
+
+    /**
      * 平滑的滚动距离
      *
      * @param scrollDistance
@@ -414,9 +454,12 @@ public class WheelView<T> extends ListView implements IWheelView {
             return;
         }
         if (Math.abs(getChildAt(0).getY()) <= mItemH / 2) {
-            position = firstPosition;
+            position = firstPosition + mSelection;
         } else {
-            position = firstPosition + 1;
+            position = firstPosition + mSelection + 1;
+        }
+        if (mLoop) {
+            position = position % getWheelCount();
         }
         if (position == mCurrentPositon) {
             return;
@@ -444,10 +487,10 @@ public class WheelView<T> extends ListView implements IWheelView {
             TextView labelTv = (TextView) itemView.findViewWithTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
             if (curPosition == i) { // 选中
                 labelTv.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
-                        -1 ? mStyle.textColor : WheelConstants.WHEEL_ITEM_TEXT_TAG));
+                        -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR));
                 itemView.setAlpha(1f);
             } else {    // 未选中
-                labelTv.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_ITEM_TEXT_TAG);
+                labelTv.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR);
                 int delta = Math.abs(i - curPosition);
                 double alpha = Math.pow(0.7f, delta);
                 itemView.setAlpha((float) alpha);
@@ -475,34 +518,9 @@ public class WheelView<T> extends ListView implements IWheelView {
         }
     }
 
-    private OnScrollListener onScrollListener = new OnScrollListener() {
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-            if (scrollState == SCROLL_STATE_IDLE) {
-                View itemView = getChildAt(0);
-                if (itemView != null) {
-                    float deltaY = itemView.getY();
-                    if (deltaY == 0) {
-                        return;
-                    }
-                    if (Math.abs(deltaY) < mItemH / 2) {
-                        int d = getSmoothDistance(deltaY);
-                        smoothScrollBy(d, WheelConstants.WHEEL_SMOOTH_SCROLL_DURATION);
-                    } else {
-                        int d = getSmoothDistance(mItemH + deltaY);
-                        smoothScrollBy(d, WheelConstants.WHEEL_SMOOTH_SCROLL_DURATION);
-                    }
-                }
-            } else if (scrollState == SCROLL_STATE_TOUCH_SCROLL) {
-            } else if (scrollState == SCROLL_STATE_FLING) {
-            }
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            refreshCurrentPosition();
-        }
-    };
+    public enum Skin { // 滚轮皮肤
+        Common, Holo, None
+    }
 
     public interface OnWheelItemSelectedListener<T> {
         void onItemSelected(int position, T t);
