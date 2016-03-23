@@ -76,14 +76,14 @@ public class MainActivity extends Activity {
         wheelView3 = (WheelView) findViewById(R.id.wheelview3);
         SimpleWheelAdapter adapter = new SimpleWheelAdapter(this);
         wheelView3.setWheelAdapter(adapter);
-        wheelView3.setWheelSize(3);
+        wheelView3.setWheelSize(5);
         wheelView3.setWheelData(createDatas());
         wheelView3.setSkin(WheelView.Skin.None);
         WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
         style.textColor = Color.BLACK;
         style.selectedTextColor = Color.BLUE;
         wheelView3.setStyle(style);
-        wheelView3.setSelection(1);
+        wheelView3.setSelection(2);
         wheelView3.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<WheelData>() {
             @Override
             public void onItemSelected(int position, WheelData data) {

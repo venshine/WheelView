@@ -59,4 +59,19 @@ public class WheelConstants {
      */
     public static final int WHEEL_TEXT_COLOR = Color.BLACK;
 
+    /**
+     * common皮肤默认选中框颜色
+     */
+    public static final int WHEEL_SKIN_COMMON_COLOR = Color.parseColor("#f0cfcfcf");
+
+    /**
+     * common皮肤选中框divider颜色
+     */
+    public static final int WHEEL_SKIN_COMMON_DIVIDER_COLOR = Color.parseColor("#b5b5b5");
+
+    /**
+     * common皮肤左右边框颜色
+     */
+    public static final int WHEEL_SKIN_COMMON_BORDER_COLOR = Color.parseColor("#666666");
+
 }

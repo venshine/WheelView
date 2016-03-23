@@ -26,7 +26,7 @@ import java.util.List;
  *
  * @author fengwx
  */
-public class WheelView<T> extends ListView implements IWheelView {
+public class WheelView<T> extends ListView implements IWheelView<T> {
 
     private static final int[] SHADOWS_COLORS =
             {
@@ -43,6 +43,8 @@ public class WheelView<T> extends ListView implements IWheelView {
     private int mExtraTextColor;    // 附加文本颜色
     private int mExtraTextSize; // 附加文本大小
     private int mExtraMargin;   // 附加文本外边距
+
+    private Paint mCommonBgPaint, mHoloBgPaint, mHoloPaint, mCommonPaint, mCommonDividerPaint, mTextPaint, mCommonBorderPaint;
 
     private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
             SHADOWS_COLORS);    // 顶部阴影
@@ -119,6 +121,9 @@ public class WheelView<T> extends ListView implements IWheelView {
         if (mStyle == null) {
             mStyle = new WheelViewStyle();
         }
+
+        initPaint();
+
         setVerticalScrollBarEnabled(false);
         setScrollingCacheEnabled(false);
         setCacheColorHint(Color.TRANSPARENT);
@@ -126,7 +131,9 @@ public class WheelView<T> extends ListView implements IWheelView {
         setOverScrollMode(OVER_SCROLL_NEVER);
         setDividerHeight(0);
         setOnScrollListener(onScrollListener);
+
         setBackground();
+
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -148,6 +155,34 @@ public class WheelView<T> extends ListView implements IWheelView {
                 }
             }
         });
+    }
+
+    private void initPaint() {
+        mCommonBgPaint = new Paint();
+        mCommonBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
+                .WHEEL_SKIN_COMMON_BG);
+
+        mHoloBgPaint = new Paint();
+        mHoloBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
+                .WHEEL_SKIN_HOLO_BG);
+
+        mHoloPaint = new Paint();
+        mHoloPaint.setColor(mStyle.holoBorderColor != -1 ? mStyle.holoBorderColor : WheelConstants
+                .WHEEL_SKIN_HOLO_BORDER_COLOR);
+        mHoloPaint.setStrokeWidth(3);
+
+        mCommonPaint = new Paint();
+        mCommonPaint.setColor(WheelConstants.WHEEL_SKIN_COMMON_COLOR);
+
+        mCommonDividerPaint = new Paint();
+        mCommonDividerPaint.setColor(WheelConstants.WHEEL_SKIN_COMMON_DIVIDER_COLOR);
+        mCommonDividerPaint.setStrokeWidth(2);
+
+        mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+
+        mCommonBorderPaint = new Paint();
+        mCommonBorderPaint.setStrokeWidth(6);
+        mCommonBorderPaint.setColor(WheelConstants.WHEEL_SKIN_COMMON_BORDER_COLOR);
     }
 
     /**
@@ -195,23 +230,16 @@ public class WheelView<T> extends ListView implements IWheelView {
         Drawable drawable = new Drawable() {
             @Override
             public void draw(Canvas canvas) {
+                int width = getWidth();
                 // draw background
-                Paint paint = new Paint();
-                paint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
-                        .WHEEL_SKIN_HOLO_BG);
-                canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+                canvas.drawRect(0, 0, width, getHeight(), mHoloBgPaint);
 
                 // draw select border
-                int viewWidth = getWidth();
-                Paint dividerPaint = new Paint();
-                dividerPaint.setColor(mStyle.holoBorderColor != -1 ? mStyle.holoBorderColor : WheelConstants
-                        .WHEEL_SKIN_HOLO_BORDER_COLOR);
-                dividerPaint.setStrokeWidth(3);
                 if (mItemH != 0) {
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
-                            * (mWheelSize / 2), dividerPaint);
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), viewWidth, mItemH
-                            * (mWheelSize / 2 + 1), dividerPaint);
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2), width, mItemH
+                            * (mWheelSize / 2), mHoloPaint);
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), width, mItemH
+                            * (mWheelSize / 2 + 1), mHoloPaint);
                 }
             }
 
@@ -242,26 +270,18 @@ public class WheelView<T> extends ListView implements IWheelView {
         Drawable drawable = new Drawable() {
             @Override
             public void draw(Canvas canvas) {
+                int width = getWidth();
                 // draw background
-                Paint paint = new Paint();
-                paint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
-                        .WHEEL_SKIN_COMMON_BG);
-                canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
+                canvas.drawRect(0, 0, width, getHeight(), mCommonBgPaint);
 
                 // draw select border
-                int viewWidth = getWidth();
-                Paint dividerPaint = new Paint();
-                dividerPaint.setColor(Color.parseColor("#b5b5b5"));
-                dividerPaint.setStrokeWidth(2);
-                Paint seletedSolidPaint = new Paint();
-                seletedSolidPaint.setColor(Color.parseColor("#f0cfcfcf"));
                 if (mItemH != 0) {
-                    canvas.drawRect(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
-                            * (mWheelSize / 2 + 1), seletedSolidPaint);
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2), viewWidth, mItemH
-                            * (mWheelSize / 2), dividerPaint);
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), viewWidth, mItemH
-                            * (mWheelSize / 2 + 1), dividerPaint);
+                    canvas.drawRect(0, mItemH * (mWheelSize / 2), width, mItemH
+                            * (mWheelSize / 2 + 1), mCommonPaint);
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2), width, mItemH
+                            * (mWheelSize / 2), mCommonDividerPaint);
+                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), width, mItemH
+                            * (mWheelSize / 2 + 1), mCommonDividerPaint);
                 }
             }
 
@@ -309,6 +329,7 @@ public class WheelView<T> extends ListView implements IWheelView {
      *
      * @param wheelSize
      */
+    @Override
     public void setWheelSize(int wheelSize) {
         if (wheelSize < 3 || ((wheelSize & 1) == 0)) {
             throw new WheelViewException("wheel size must be an odd number.");
@@ -327,6 +348,7 @@ public class WheelView<T> extends ListView implements IWheelView {
      *
      * @param loop
      */
+    @Override
     public void setLoop(boolean loop) {
         if (loop != mLoop) {
             mLoop = loop;
@@ -356,6 +378,8 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
+     * 获得滚轮当前真实位置
+     *
      * @param positon
      * @return
      */
@@ -409,10 +433,11 @@ public class WheelView<T> extends ListView implements IWheelView {
     }
 
     /**
-     * 设置滚轮数据适配器
+     * 设置滚轮数据源适配器
      *
      * @param adapter
      */
+    @Override
     public void setWheelAdapter(BaseWheelAdapter<T> adapter) {
         super.setAdapter(adapter);
         mBaseWheelAdapter = adapter;
@@ -424,6 +449,7 @@ public class WheelView<T> extends ListView implements IWheelView {
      *
      * @param list
      */
+    @Override
     public void setWheelData(List<T> list) {
         if (list == null || (list != null && list.size() < mWheelSize)) {
             throw new WheelViewException("wheel datas cannot be smaller than wheel size.");
@@ -535,33 +561,32 @@ public class WheelView<T> extends ListView implements IWheelView {
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
+        int width = getWidth();
+        int height = getHeight();
+
         if (!TextUtils.isEmpty(mExtraText)) {
-            Rect targetRect = new Rect(0, mItemH * (mWheelSize / 2), getWidth(), mItemH * (mWheelSize / 2 + 1));
-            Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            paint.setTextSize(mExtraTextSize);
-            paint.setColor(mExtraTextColor);
-            Paint.FontMetricsInt fontMetrics = paint.getFontMetricsInt();
+            Rect targetRect = new Rect(0, mItemH * (mWheelSize / 2), width, mItemH * (mWheelSize / 2 + 1));
+            mTextPaint.setTextSize(mExtraTextSize);
+            mTextPaint.setColor(mExtraTextColor);
+            Paint.FontMetricsInt fontMetrics = mTextPaint.getFontMetricsInt();
             int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
-            paint.setTextAlign(Paint.Align.CENTER);
-            canvas.drawText(mExtraText, targetRect.centerX() + mExtraMargin, baseline, paint);
+            mTextPaint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText(mExtraText, targetRect.centerX() + mExtraMargin, baseline, mTextPaint);
         }
 
         if (mSkin.equals(Skin.Common)) {
             if (mItemH == 0) {
                 return;
             }
-            int height = mItemH;
-            mTopShadow.setBounds(0, 0, getWidth(), height);
+            int h = mItemH;
+            mTopShadow.setBounds(0, 0, width, h);
             mTopShadow.draw(canvas);
 
-            mBottomShadow.setBounds(0, getHeight() - height, getWidth(), getHeight());
+            mBottomShadow.setBounds(0, height - h, width, height);
             mBottomShadow.draw(canvas);
 
-            Paint paint1 = new Paint();
-            paint1.setStrokeWidth(6);
-            paint1.setColor(Color.parseColor("#666666"));
-            canvas.drawLine(0, 0, 0, getHeight(), paint1);
-            canvas.drawLine(getWidth(), 0, getWidth(), getHeight(), paint1);
+            canvas.drawLine(0, 0, 0, height, mCommonBorderPaint);
+            canvas.drawLine(width, 0, width, height, mCommonBorderPaint);
         }
     }
 
