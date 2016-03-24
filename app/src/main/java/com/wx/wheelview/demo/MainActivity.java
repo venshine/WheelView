@@ -105,8 +105,10 @@ public class MainActivity extends Activity {
         MyWheelAdapter adapter = new MyWheelAdapter(this);
         wheelView4.setWheelAdapter(adapter);
         wheelView4.setWheelSize(5);
+        wheelView4.setSkin(WheelView.Skin.Holo);
         wheelView4.setWheelData(createArrays());
         WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
+        style.backgroundColor = Color.YELLOW;
         style.textColor = Color.DKGRAY;
         style.selectedTextColor = Color.GREEN;
         wheelView4.setStyle(style);

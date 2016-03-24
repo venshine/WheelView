@@ -44,7 +44,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private int mExtraTextSize; // 附加文本大小
     private int mExtraMargin;   // 附加文本外边距
 
-    private Paint mCommonBgPaint, mHoloBgPaint, mHoloPaint, mCommonPaint, mCommonDividerPaint, mTextPaint, mCommonBorderPaint;
+    private Paint mBgPaint, mCommonBgPaint, mHoloBgPaint, mHoloPaint, mCommonPaint, mCommonDividerPaint, mTextPaint, mCommonBorderPaint;
 
     private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
             SHADOWS_COLORS);    // 顶部阴影
@@ -158,17 +158,13 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     }
 
     private void initPaint() {
+        mBgPaint = new Paint();
+
         mCommonBgPaint = new Paint();
-        mCommonBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
-                .WHEEL_SKIN_COMMON_BG);
 
         mHoloBgPaint = new Paint();
-        mHoloBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
-                .WHEEL_SKIN_HOLO_BG);
 
         mHoloPaint = new Paint();
-        mHoloPaint.setColor(mStyle.holoBorderColor != -1 ? mStyle.holoBorderColor : WheelConstants
-                .WHEEL_SKIN_HOLO_BORDER_COLOR);
         mHoloPaint.setStrokeWidth(3);
 
         mCommonPaint = new Paint();
@@ -220,7 +216,33 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * 背景
      */
     private void drawBg() {
-        setBackgroundColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants.WHEEL_BG);
+        Drawable drawable = new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
+                mBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants.WHEEL_BG);
+                canvas.drawRect(0, 0, getWidth(), getHeight(), mBgPaint);
+            }
+
+            @Override
+            public void setAlpha(int alpha) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return 0;
+            }
+        };
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            setBackground(drawable);
+        } else {
+            setBackgroundDrawable(drawable);
+        }
     }
 
     /**
@@ -232,10 +254,14 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             public void draw(Canvas canvas) {
                 int width = getWidth();
                 // draw background
+                mHoloBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
+                        .WHEEL_SKIN_HOLO_BG);
                 canvas.drawRect(0, 0, width, getHeight(), mHoloBgPaint);
 
                 // draw select border
                 if (mItemH != 0) {
+                    mHoloPaint.setColor(mStyle.holoBorderColor != -1 ? mStyle.holoBorderColor : WheelConstants
+                            .WHEEL_SKIN_HOLO_BORDER_COLOR);
                     canvas.drawLine(0, mItemH * (mWheelSize / 2), width, mItemH
                             * (mWheelSize / 2), mHoloPaint);
                     canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), width, mItemH
@@ -272,6 +298,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             public void draw(Canvas canvas) {
                 int width = getWidth();
                 // draw background
+                mCommonBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
+                        .WHEEL_SKIN_COMMON_BG);
                 canvas.drawRect(0, 0, width, getHeight(), mCommonBgPaint);
 
                 // draw select border
