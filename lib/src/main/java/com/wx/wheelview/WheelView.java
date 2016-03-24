@@ -56,7 +56,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     private WheelViewStyle mStyle;  // 滚轮样式
 
-    private BaseWheelAdapter<T> mBaseWheelAdapter;
+    private BaseWheelAdapter<T> mWheelAdapter;
 
     private OnWheelItemSelectedListener<T> mOnWheelItemSelectedListener;
 
@@ -338,8 +338,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             throw new WheelViewException("wheel datas cannot be smaller than wheel size.");
         }
         mWheelSize = wheelSize;
-        if (mBaseWheelAdapter != null) {
-            mBaseWheelAdapter.setWheelSize(wheelSize);
+        if (mWheelAdapter != null) {
+            mWheelAdapter.setWheelSize(wheelSize);
         }
     }
 
@@ -353,8 +353,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         if (loop != mLoop) {
             mLoop = loop;
             setSelection(0);
-            if (mBaseWheelAdapter != null) {
-                mBaseWheelAdapter.setLoop(loop);
+            if (mWheelAdapter != null) {
+                mWheelAdapter.setLoop(loop);
             }
         }
     }
@@ -440,8 +440,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     @Override
     public void setWheelAdapter(BaseWheelAdapter<T> adapter) {
         super.setAdapter(adapter);
-        mBaseWheelAdapter = adapter;
-        mBaseWheelAdapter.setData(mList).setLoop(mLoop).setWheelSize(mWheelSize);
+        mWheelAdapter = adapter;
+        mWheelAdapter.setData(mList).setLoop(mLoop).setWheelSize(mWheelSize);
     }
 
     /**
@@ -455,8 +455,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             throw new WheelViewException("wheel datas cannot be smaller than wheel size.");
         }
         mList = list;
-        if (mBaseWheelAdapter != null) {
-            mBaseWheelAdapter.setData(list);
+        if (mWheelAdapter != null) {
+            mWheelAdapter.setData(list);
         }
     }
 
@@ -543,16 +543,32 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             if (itemView == null) {
                 continue;
             }
-            TextView textView = (TextView) itemView.findViewWithTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
-            if (curPosition == i) { // 选中
-                textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
-                        -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR));
-                itemView.setAlpha(1f);
-            } else {    // 未选中
-                textView.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR);
-                int delta = Math.abs(i - curPosition);
-                double alpha = Math.pow(0.7f, delta);
-                itemView.setAlpha((float) alpha);
+            if (mWheelAdapter instanceof ArrayWheelAdapter || mWheelAdapter instanceof SimpleWheelAdapter) {
+                TextView textView = (TextView) itemView.findViewWithTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
+                if (curPosition == i) { // 选中
+                    textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
+                            -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR));
+                    itemView.setAlpha(1f);
+                } else {    // 未选中
+                    textView.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR);
+                    int delta = Math.abs(i - curPosition);
+                    float alpha = (float) Math.pow(0.7f, delta);
+                    itemView.setAlpha(alpha);
+                }
+            } else {    // 自定义类型
+                TextView textView = WheelUtils.findTextView(itemView);
+                if (textView != null) {
+                    if (curPosition == i) { // 选中
+                        textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
+                                -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR));
+                        itemView.setAlpha(1f);
+                    } else {    // 未选中
+                        textView.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR);
+                        int delta = Math.abs(i - curPosition);
+                        float alpha = (float) Math.pow(0.7f, delta);
+                        itemView.setAlpha(alpha);
+                    }
+                }
             }
         }
     }

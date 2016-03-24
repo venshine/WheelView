@@ -2,6 +2,9 @@ package com.wx.wheelview;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.util.Collection;
 
@@ -34,6 +37,24 @@ public class WheelUtils {
      */
     public static <V> boolean isEmpty(Collection<V> c) {
         return (c == null || c.size() == 0);
+    }
+
+    /**
+     * 遍历查找TextView
+     *
+     * @param view
+     * @return
+     */
+    public static TextView findTextView(View view) {
+        if (view instanceof TextView) {
+            return (TextView) view;
+        } else {
+            if (view instanceof ViewGroup) {
+                return findTextView(((ViewGroup) view).getChildAt(0));
+            } else {
+                return null;
+            }
+        }
     }
 
 

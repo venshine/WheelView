@@ -32,6 +32,9 @@ public class MainActivity extends Activity {
         initWheel4();
     }
 
+    /**
+     * common皮肤
+     */
     private void initWheel1() {
         wheelView1 = (WheelView) findViewById(R.id.wheelview1);
         ArrayWheelAdapter adapter = new ArrayWheelAdapter(this);
@@ -51,6 +54,9 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * holo皮肤
+     */
     private void initWheel2() {
         wheelView2 = (WheelView) findViewById(R.id.wheelview2);
         ArrayWheelAdapter adapter = new ArrayWheelAdapter(this);
@@ -72,6 +78,9 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * 图文混排，无皮肤
+     */
     private void initWheel3() {
         wheelView3 = (WheelView) findViewById(R.id.wheelview3);
         SimpleWheelAdapter adapter = new SimpleWheelAdapter(this);
@@ -79,10 +88,6 @@ public class MainActivity extends Activity {
         wheelView3.setWheelSize(5);
         wheelView3.setWheelData(createDatas());
         wheelView3.setSkin(WheelView.Skin.None);
-        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
-        style.textColor = Color.BLACK;
-        style.selectedTextColor = Color.BLUE;
-        wheelView3.setStyle(style);
         wheelView3.setSelection(2);
         wheelView3.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<WheelData>() {
             @Override
@@ -92,21 +97,23 @@ public class MainActivity extends Activity {
         });
     }
 
+    /**
+     * 自定义布局
+     */
     private void initWheel4() {
         wheelView4 = (WheelView) findViewById(R.id.wheelview4);
-        SimpleWheelAdapter adapter = new SimpleWheelAdapter(this);
+        MyWheelAdapter adapter = new MyWheelAdapter(this);
         wheelView4.setWheelAdapter(adapter);
-        wheelView4.setWheelSize(3);
-        wheelView4.setWheelData(createDatas());
-        wheelView4.setSkin(WheelView.Skin.Holo);
+        wheelView4.setWheelSize(5);
+        wheelView4.setWheelData(createArrays());
         WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
-        style.textColor = Color.BLACK;
-        style.selectedTextColor = Color.BLUE;
+        style.textColor = Color.DKGRAY;
+        style.selectedTextColor = Color.GREEN;
         wheelView4.setStyle(style);
-        wheelView4.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<WheelData>() {
+        wheelView4.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<String>() {
             @Override
-            public void onItemSelected(int position, WheelData data) {
-                WheelUtils.log(data.getName());
+            public void onItemSelected(int position, String s) {
+                WheelUtils.log(s);
             }
         });
     }
