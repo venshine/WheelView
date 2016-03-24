@@ -1,4 +1,6 @@
-package com.wx.wheelview;
+package com.wx.wheelview.widget;
+
+import com.wx.wheelview.adapter.BaseWheelAdapter;
 
 import java.util.List;
 

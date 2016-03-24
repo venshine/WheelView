@@ -1,4 +1,4 @@
-package com.wx.wheelview;
+package com.wx.wheelview.widget;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.wx.wheelview.common.WheelConstants;
 
 /**
  * 滚轮Item布局，包含图片和文本

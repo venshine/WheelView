@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.wx.wheelview.BaseWheelAdapter;
+import com.wx.wheelview.adapter.BaseWheelAdapter;
 
 /**
  * Demo

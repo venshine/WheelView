@@ -1,19 +1,21 @@
-package com.wx.wheelview;
+package com.wx.wheelview.adapter;
 
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.wx.wheelview.widget.WheelItem;
+
 /**
- * 滚轮图片和文本适配器
+ * 滚轮文本适配器
  *
  * @author fengwx
  */
-public class SimpleWheelAdapter extends BaseWheelAdapter<WheelData> {
+public class ArrayWheelAdapter extends BaseWheelAdapter<String> {
 
     private Context mContext;
 
-    public SimpleWheelAdapter(Context context) {
+    public ArrayWheelAdapter(Context context) {
         mContext = context;
     }
 
@@ -23,8 +25,7 @@ public class SimpleWheelAdapter extends BaseWheelAdapter<WheelData> {
             convertView = new WheelItem(mContext);
         }
         WheelItem item = (WheelItem) convertView;
-        item.setImage(mList.get(position).getId());
-        item.setText(mList.get(position).getName());
+        item.setText(mList.get(position));
         return convertView;
     }
 

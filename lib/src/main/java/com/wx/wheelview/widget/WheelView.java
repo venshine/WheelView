@@ -1,13 +1,11 @@
-package com.wx.wheelview;
+package com.wx.wheelview.widget;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -19,6 +17,14 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.wx.wheelview.graphics.DrawableFactory;
+import com.wx.wheelview.common.WheelConstants;
+import com.wx.wheelview.util.WheelUtils;
+import com.wx.wheelview.common.WheelViewException;
+import com.wx.wheelview.adapter.ArrayWheelAdapter;
+import com.wx.wheelview.adapter.BaseWheelAdapter;
+import com.wx.wheelview.adapter.SimpleWheelAdapter;
+
 import java.util.List;
 
 /**
@@ -28,12 +34,6 @@ import java.util.List;
  */
 public class WheelView<T> extends ListView implements IWheelView<T> {
 
-    private static final int[] SHADOWS_COLORS =
-            {
-                    0xFF111111,
-                    0x00AAAAAA,
-                    0x00AAAAAA
-            };  // 阴影色值
     private int mItemH = 0; // 每一项高度
     private int mWheelSize = WHEEL_SIZE;    // 滚轮个数
     private boolean mLoop = LOOP;   // 是否循环滚动
@@ -44,13 +44,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private int mExtraTextSize; // 附加文本大小
     private int mExtraMargin;   // 附加文本外边距
 
-    private Paint mBgPaint, mCommonBgPaint, mHoloBgPaint, mHoloPaint, mCommonPaint, mCommonDividerPaint, mTextPaint, mCommonBorderPaint;
-
-    private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-            SHADOWS_COLORS);    // 顶部阴影
-
-    private GradientDrawable mBottomShadow = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
-            SHADOWS_COLORS);    // 底部阴影
+    private Paint mTextPaint;
 
     private Skin mSkin = Skin.None; // 皮肤风格
 
@@ -122,7 +116,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             mStyle = new WheelViewStyle();
         }
 
-        initPaint();
+        mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         setVerticalScrollBarEnabled(false);
         setScrollingCacheEnabled(false);
@@ -131,8 +125,6 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         setOverScrollMode(OVER_SCROLL_NEVER);
         setDividerHeight(0);
         setOnScrollListener(onScrollListener);
-
-        setBackground();
 
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -149,36 +141,13 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                         params.height = mItemH * mWheelSize;
                         refreshVisibleItems(getFirstVisiblePosition(), getCurrentPosition() + mWheelSize / 2,
                                 mWheelSize / 2);
+                        setBackground();
                     } else {
                         throw new WheelViewException("wheel item is error.");
                     }
                 }
             }
         });
-    }
-
-    private void initPaint() {
-        mBgPaint = new Paint();
-
-        mCommonBgPaint = new Paint();
-
-        mHoloBgPaint = new Paint();
-
-        mHoloPaint = new Paint();
-        mHoloPaint.setStrokeWidth(3);
-
-        mCommonPaint = new Paint();
-        mCommonPaint.setColor(WheelConstants.WHEEL_SKIN_COMMON_COLOR);
-
-        mCommonDividerPaint = new Paint();
-        mCommonDividerPaint.setColor(WheelConstants.WHEEL_SKIN_COMMON_DIVIDER_COLOR);
-        mCommonDividerPaint.setStrokeWidth(2);
-
-        mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-
-        mCommonBorderPaint = new Paint();
-        mCommonBorderPaint.setStrokeWidth(6);
-        mCommonBorderPaint.setColor(WheelConstants.WHEEL_SKIN_COMMON_BORDER_COLOR);
     }
 
     /**
@@ -203,129 +172,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * 设置背景
      */
     private void setBackground() {
-        if (mSkin.equals(Skin.Common)) {
-            drawCommonBg();
-        } else if (mSkin.equals(Skin.Holo)) {
-            drawHoloBg();
-        } else if (mSkin.equals(Skin.None)) {
-            drawBg();
-        }
-    }
-
-    /**
-     * 背景
-     */
-    private void drawBg() {
-        Drawable drawable = new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
-                mBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants.WHEEL_BG);
-                canvas.drawRect(0, 0, getWidth(), getHeight(), mBgPaint);
-            }
-
-            @Override
-            public void setAlpha(int alpha) {
-
-            }
-
-            @Override
-            public void setColorFilter(ColorFilter colorFilter) {
-
-            }
-
-            @Override
-            public int getOpacity() {
-                return 0;
-            }
-        };
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            setBackground(drawable);
-        } else {
-            setBackgroundDrawable(drawable);
-        }
-    }
-
-    /**
-     * holo背景
-     */
-    private void drawHoloBg() {
-        Drawable drawable = new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
-                int width = getWidth();
-                // draw background
-                mHoloBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
-                        .WHEEL_SKIN_HOLO_BG);
-                canvas.drawRect(0, 0, width, getHeight(), mHoloBgPaint);
-
-                // draw select border
-                if (mItemH != 0) {
-                    mHoloPaint.setColor(mStyle.holoBorderColor != -1 ? mStyle.holoBorderColor : WheelConstants
-                            .WHEEL_SKIN_HOLO_BORDER_COLOR);
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2), width, mItemH
-                            * (mWheelSize / 2), mHoloPaint);
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), width, mItemH
-                            * (mWheelSize / 2 + 1), mHoloPaint);
-                }
-            }
-
-            @Override
-            public void setAlpha(int alpha) {
-            }
-
-            @Override
-            public void setColorFilter(ColorFilter colorFilter) {
-            }
-
-            @Override
-            public int getOpacity() {
-                return 0;
-            }
-        };
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            setBackground(drawable);
-        } else {
-            setBackgroundDrawable(drawable);
-        }
-    }
-
-    /**
-     * common背景
-     */
-    private void drawCommonBg() {
-        Drawable drawable = new Drawable() {
-            @Override
-            public void draw(Canvas canvas) {
-                int width = getWidth();
-                // draw background
-                mCommonBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
-                        .WHEEL_SKIN_COMMON_BG);
-                canvas.drawRect(0, 0, width, getHeight(), mCommonBgPaint);
-
-                // draw select border
-                if (mItemH != 0) {
-                    canvas.drawRect(0, mItemH * (mWheelSize / 2), width, mItemH
-                            * (mWheelSize / 2 + 1), mCommonPaint);
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2), width, mItemH
-                            * (mWheelSize / 2), mCommonDividerPaint);
-                    canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), width, mItemH
-                            * (mWheelSize / 2 + 1), mCommonDividerPaint);
-                }
-            }
-
-            @Override
-            public void setAlpha(int alpha) {
-            }
-
-            @Override
-            public void setColorFilter(ColorFilter colorFilter) {
-            }
-
-            @Override
-            public int getOpacity() {
-                return 0;
-            }
-        };
+        Drawable drawable = DrawableFactory.createDrawable(mSkin, getWidth(), mItemH * mWheelSize, mStyle,
+                mWheelSize, mItemH);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             setBackground(drawable);
         } else {
@@ -349,7 +197,6 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      */
     public void setSkin(Skin skin) {
         mSkin = skin;
-        setBackground();
     }
 
     /**
@@ -574,7 +421,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             if (mWheelAdapter instanceof ArrayWheelAdapter || mWheelAdapter instanceof SimpleWheelAdapter) {
                 TextView textView = (TextView) itemView.findViewWithTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
                 if (curPosition == i) { // 选中
-                    textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
+                    textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle
+                            .textColor !=
                             -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR));
                     itemView.setAlpha(1f);
                 } else {    // 未选中
@@ -587,11 +435,13 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                 TextView textView = WheelUtils.findTextView(itemView);
                 if (textView != null) {
                     if (curPosition == i) { // 选中
-                        textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle.textColor !=
+                        textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle.selectedTextColor : (mStyle
+                                .textColor !=
                                 -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR));
                         itemView.setAlpha(1f);
                     } else {    // 未选中
-                        textView.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants.WHEEL_TEXT_COLOR);
+                        textView.setTextColor(mStyle.textColor != -1 ? mStyle.textColor : WheelConstants
+                                .WHEEL_TEXT_COLOR);
                         int delta = Math.abs(i - curPosition);
                         float alpha = (float) Math.pow(0.7f, delta);
                         itemView.setAlpha(alpha);
@@ -604,33 +454,14 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
-
-        int width = getWidth();
-        int height = getHeight();
-
         if (!TextUtils.isEmpty(mExtraText)) {
-            Rect targetRect = new Rect(0, mItemH * (mWheelSize / 2), width, mItemH * (mWheelSize / 2 + 1));
+            Rect targetRect = new Rect(0, mItemH * (mWheelSize / 2), getWidth(), mItemH * (mWheelSize / 2 + 1));
             mTextPaint.setTextSize(mExtraTextSize);
             mTextPaint.setColor(mExtraTextColor);
             Paint.FontMetricsInt fontMetrics = mTextPaint.getFontMetricsInt();
             int baseline = (targetRect.bottom + targetRect.top - fontMetrics.bottom - fontMetrics.top) / 2;
             mTextPaint.setTextAlign(Paint.Align.CENTER);
             canvas.drawText(mExtraText, targetRect.centerX() + mExtraMargin, baseline, mTextPaint);
-        }
-
-        if (mSkin.equals(Skin.Common)) {
-            if (mItemH == 0) {
-                return;
-            }
-            int h = mItemH;
-            mTopShadow.setBounds(0, 0, width, h);
-            mTopShadow.draw(canvas);
-
-            mBottomShadow.setBounds(0, height - h, width, height);
-            mBottomShadow.draw(canvas);
-
-            canvas.drawLine(0, 0, 0, height, mCommonBorderPaint);
-            canvas.drawLine(width, 0, width, height, mCommonBorderPaint);
         }
     }
 

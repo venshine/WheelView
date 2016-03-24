@@ -1,4 +1,4 @@
-package com.wx.wheelview;
+package com.wx.wheelview.util;
 
 import android.text.TextUtils;
 import android.util.Log;

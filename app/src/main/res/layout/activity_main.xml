@@ -9,14 +9,14 @@
         android:layout_height="300dp"
         android:orientation="horizontal">
 
-        <com.wx.wheelview.WheelView
+        <com.wx.wheelview.widget.WheelView
             android:id="@+id/wheelview1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"/>
 
-        <com.wx.wheelview.WheelView
+        <com.wx.wheelview.widget.WheelView
             android:id="@+id/wheelview2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -29,14 +29,14 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.wx.wheelview.WheelView
+        <com.wx.wheelview.widget.WheelView
             android:id="@+id/wheelview3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_weight="1"/>
 
-        <com.wx.wheelview.WheelView
+        <com.wx.wheelview.widget.WheelView
             android:id="@+id/wheelview4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

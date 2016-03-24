@@ -1,8 +1,11 @@
-package com.wx.wheelview;
+package com.wx.wheelview.adapter;
 
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+
+import com.wx.wheelview.widget.IWheelView;
+import com.wx.wheelview.util.WheelUtils;
 
 import java.util.List;
 

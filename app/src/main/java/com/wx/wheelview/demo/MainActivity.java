@@ -4,11 +4,10 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
 
-import com.wx.wheelview.ArrayWheelAdapter;
-import com.wx.wheelview.SimpleWheelAdapter;
-import com.wx.wheelview.WheelData;
-import com.wx.wheelview.WheelUtils;
-import com.wx.wheelview.WheelView;
+import com.wx.wheelview.adapter.ArrayWheelAdapter;
+import com.wx.wheelview.adapter.SimpleWheelAdapter;
+import com.wx.wheelview.common.WheelData;
+import com.wx.wheelview.widget.WheelView;
 
 import java.util.ArrayList;
 
@@ -37,21 +36,9 @@ public class MainActivity extends Activity {
      */
     private void initWheel1() {
         wheelView1 = (WheelView) findViewById(R.id.wheelview1);
-        ArrayWheelAdapter adapter = new ArrayWheelAdapter(this);
-        wheelView1.setWheelAdapter(adapter);
-        wheelView1.setWheelSize(3);
+        wheelView1.setWheelAdapter(new ArrayWheelAdapter(this));
         wheelView1.setSkin(WheelView.Skin.Common);
         wheelView1.setWheelData(createArrays());
-        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
-        style.textColor = Color.BLACK;
-        style.selectedTextColor = Color.RED;
-        wheelView1.setStyle(style);
-        wheelView1.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(int position, String s) {
-                WheelUtils.log(s);
-            }
-        });
     }
 
     /**
@@ -59,8 +46,7 @@ public class MainActivity extends Activity {
      */
     private void initWheel2() {
         wheelView2 = (WheelView) findViewById(R.id.wheelview2);
-        ArrayWheelAdapter adapter = new ArrayWheelAdapter(this);
-        wheelView2.setWheelAdapter(adapter);
+        wheelView2.setWheelAdapter(new ArrayWheelAdapter(this));
         wheelView2.setWheelSize(5);
         wheelView2.setWheelData(createArrays());
         wheelView2.setLoop(true);
@@ -70,12 +56,6 @@ public class MainActivity extends Activity {
         style.textColor = Color.BLACK;
         style.selectedTextColor = Color.BLUE;
         wheelView2.setStyle(style);
-        wheelView2.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<String>() {
-            @Override
-            public void onItemSelected(int position, String s) {
-                WheelUtils.log(s);
-            }
-        });
     }
 
     /**
@@ -83,8 +63,7 @@ public class MainActivity extends Activity {
      */
     private void initWheel3() {
         wheelView3 = (WheelView) findViewById(R.id.wheelview3);
-        SimpleWheelAdapter adapter = new SimpleWheelAdapter(this);
-        wheelView3.setWheelAdapter(adapter);
+        wheelView3.setWheelAdapter(new SimpleWheelAdapter(this));
         wheelView3.setWheelSize(5);
         wheelView3.setWheelData(createDatas());
         wheelView3.setSkin(WheelView.Skin.None);
@@ -92,7 +71,6 @@ public class MainActivity extends Activity {
         wheelView3.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<WheelData>() {
             @Override
             public void onItemSelected(int position, WheelData data) {
-                WheelUtils.log(data.getName());
             }
         });
     }
@@ -102,8 +80,7 @@ public class MainActivity extends Activity {
      */
     private void initWheel4() {
         wheelView4 = (WheelView) findViewById(R.id.wheelview4);
-        MyWheelAdapter adapter = new MyWheelAdapter(this);
-        wheelView4.setWheelAdapter(adapter);
+        wheelView4.setWheelAdapter(new MyWheelAdapter(this));
         wheelView4.setWheelSize(5);
         wheelView4.setSkin(WheelView.Skin.Holo);
         wheelView4.setWheelData(createArrays());
@@ -115,7 +92,6 @@ public class MainActivity extends Activity {
         wheelView4.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<String>() {
             @Override
             public void onItemSelected(int position, String s) {
-                WheelUtils.log(s);
             }
         });
     }

@@ -1,4 +1,4 @@
-package com.wx.wheelview;
+package com.wx.wheelview.common;
 
 import android.graphics.Color;
 
