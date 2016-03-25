@@ -27,6 +27,14 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
 
+task makeJar(type: Copy) {
+    delete 'build/libs/wheelview.jar'
+    from('build/intermediates/bundles/release/')
+    into('build/libs/')
+    include('classes.jar')
+    rename ('classes.jar', 'wheelview.jar')
+}
+
 def siteUrl = 'https://github.com/ifwx/WheelView'      // 项目的主页
 def gitUrl = 'https://github.com/ifwx/WheelView.git'   // Git仓库的url
 group = "com.wx.wheelview"                                        // Maven Group ID for the artifact，一般填你唯一的包名
