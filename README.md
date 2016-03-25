@@ -38,17 +38,17 @@ Use the WheelView as a View, Java and XML are both supported.
 ##### Java:
 ```Java
     public class MainActivity extends Activity {
-      @Override
-      protected void onCreate(Bundle savedInstanceState) {
-		    super.onCreate(savedInstanceState);
-		    setContentView(R.layout.activity_main)
-		    
-	WheelView wheelView = (WheelView) findViewById(R.id.wheelview);
-        wheelView.setWheelAdapter(new ArrayWheelAdapter(this)); // 文本数据源
-        wheelView.setSkin(WheelView.Skin.Common); // common皮肤
-        wheelView.setWheelData(?);  // 数据集合
-        
-	    }
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main)
+
+            WheelView wheelView = (WheelView) findViewById(R.id.wheelview);
+            wheelView.setWheelAdapter(new ArrayWheelAdapter(this)); // 文本数据源
+            wheelView.setSkin(WheelView.Skin.Common); // common皮肤
+            wheelView.setWheelData( ?);  // 数据集合
+
+        }
     }
 ```
 
@@ -60,9 +60,14 @@ Use the WheelView as a View, Java and XML are both supported.
             android:layout_height="wrap_content" />
 ```
 
-Author
+History
 --
-Fengwx   fengwx.cn@gmail.com
+* 1.0.0(2016-03-24)
+    - 完成滚轮控件
+
+About
+--
+* Email：fengwx.cn@gmail.com
 
 License
 --
