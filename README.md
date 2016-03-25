@@ -31,6 +31,9 @@ compile 'com.wx.wheelview:lib:1.0.0'
 </dependency>
 ```
 
+##### 导入Eclipse:
+[下载jar包](https://github.com/ifwx/WheelView/blob/master/lib/wheelview.jar)
+
 Demo
 --
 Use the WheelView as a View, Java and XML are both supported.
