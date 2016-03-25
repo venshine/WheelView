@@ -17,41 +17,48 @@ ScreenShot
 Usage
 --
 ##### Gradle:
+```groovy
 compile 'com.wx.wheelview:lib:1.0.0'
+```
 
 ##### Maven:
+```xml
 <dependency>
   <groupId>com.wx.wheelview</groupId>
   <artifactId>lib</artifactId>
   <version>1.0.0</version>
   <type>pom</type>
 </dependency>
-
+```
 
 Demo
 --
 Use the WheelView as a View, Java and XML are both supported.
 
 ##### Java:
+```Java
     public class MainActivity extends Activity {
       @Override
       protected void onCreate(Bundle savedInstanceState) {
 		    super.onCreate(savedInstanceState);
 		    setContentView(R.layout.activity_main)
 		    
-		    WheelView wheelView = (WheelView) findViewById(R.id.wheelview);
+	WheelView wheelView = (WheelView) findViewById(R.id.wheelview);
         wheelView.setWheelAdapter(new ArrayWheelAdapter(this)); // 文本数据源
         wheelView.setSkin(WheelView.Skin.Common); // common皮肤
         wheelView.setWheelData(?);  // 数据集合
         
 	    }
     }
+```
 
 ##### XML:
+```xml
     <com.wx.wheelview.widget.WheelView
             android:id="@+id/wheelview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+```
 
 Author
 --
