@@ -12,6 +12,20 @@ Features
 
 ScreenShot
 --
+![](https://github.com/ifwx/WheelView/blob/master/screenshot/screenshot.gif)
+
+Usage
+--
+##### Gradle:
+compile 'com.wx.wheelview:lib:1.0.0'
+
+##### Maven:
+<dependency>
+  <groupId>com.wx.wheelview</groupId>
+  <artifactId>lib</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
 
 
 Demo
