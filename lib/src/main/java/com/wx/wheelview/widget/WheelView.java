@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
@@ -17,13 +19,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.wx.wheelview.graphics.DrawableFactory;
-import com.wx.wheelview.common.WheelConstants;
-import com.wx.wheelview.util.WheelUtils;
-import com.wx.wheelview.common.WheelViewException;
 import com.wx.wheelview.adapter.ArrayWheelAdapter;
 import com.wx.wheelview.adapter.BaseWheelAdapter;
 import com.wx.wheelview.adapter.SimpleWheelAdapter;
+import com.wx.wheelview.common.WheelConstants;
+import com.wx.wheelview.common.WheelViewException;
+import com.wx.wheelview.graphics.DrawableFactory;
+import com.wx.wheelview.util.WheelUtils;
 
 import java.util.List;
 
@@ -44,7 +46,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private int mExtraTextSize; // 附加文本大小
     private int mExtraMargin;   // 附加文本外边距
 
-    private Paint mTextPaint;
+    private Paint mTextPaint;   // 附加文本画笔
 
     private Skin mSkin = Skin.None; // 皮肤风格
 
@@ -53,6 +55,17 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private BaseWheelAdapter<T> mWheelAdapter;
 
     private OnWheelItemSelectedListener<T> mOnWheelItemSelectedListener;
+
+    private Handler mHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == WheelConstants.WHEEL_SCROLL_HANDLER_WHAT) {
+                if (mOnWheelItemSelectedListener != null) {
+                    mOnWheelItemSelectedListener.onItemSelected(getCurrentPosition(), getSelectionItem());
+                }
+            }
+        }
+    };
 
     private OnScrollListener onScrollListener = new OnScrollListener() {
         @Override
@@ -400,9 +413,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             return;
         }
         mCurrentPositon = position;
-        if (mOnWheelItemSelectedListener != null) {
-            mOnWheelItemSelectedListener.onItemSelected(getCurrentPosition(), getSelectionItem());
-        }
+        mHandler.removeMessages(WheelConstants.WHEEL_SCROLL_HANDLER_WHAT);
+        mHandler.sendEmptyMessageDelayed(WheelConstants.WHEEL_SCROLL_HANDLER_WHAT, WheelConstants.WHEEL_SCROLL_DELAY_DURATION);
     }
 
     /**

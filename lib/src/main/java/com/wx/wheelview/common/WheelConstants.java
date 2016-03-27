@@ -74,4 +74,14 @@ public class WheelConstants {
      */
     public static final int WHEEL_SKIN_COMMON_BORDER_COLOR = Color.parseColor("#666666");
 
+    /**
+     * 滚轮滑动时展示选中项
+     */
+    public static final int WHEEL_SCROLL_HANDLER_WHAT = 0x0100;
+
+    /**
+     * 滚轮滑动时展示选中项延迟时间
+     */
+    public static final int WHEEL_SCROLL_DELAY_DURATION = 600;
+
 }

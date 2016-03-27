@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.wx.wheelview.adapter.ArrayWheelAdapter;
 import com.wx.wheelview.adapter.SimpleWheelAdapter;
 import com.wx.wheelview.common.WheelData;
+import com.wx.wheelview.util.WheelUtils;
 import com.wx.wheelview.widget.WheelView;
 
 import java.util.ArrayList;
@@ -71,6 +72,7 @@ public class MainActivity extends Activity {
         wheelView3.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<WheelData>() {
             @Override
             public void onItemSelected(int position, WheelData data) {
+                WheelUtils.log("selected:" + position);
             }
         });
     }

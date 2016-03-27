@@ -2,6 +2,7 @@ package com.wx.wheelview.widget;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
@@ -57,6 +58,7 @@ public class WheelItem extends LinearLayout {
         // 文本
         mText = new TextView(getContext());
         mText.setTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
+        mText.setEllipsize(TextUtils.TruncateAt.END);
         mText.setSingleLine();
         mText.setTextColor(Color.BLACK);
         LayoutParams textParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
