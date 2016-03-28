@@ -13,7 +13,7 @@ Features
 
 ScreenShot
 --
-![](https://github.com/ifwx/WheelView/blob/master/screenshot/screenshot.gif)
+![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot.gif)
 
 Usage
 --
@@ -73,11 +73,11 @@ History
 
 About
 --
-* Email：fengwx.cn@gmail.com
+* Email：venshine.cn@gmail.com
 
 License
 --
-    Copyright (C) 2016 fengwx.cn@gmail.com
+    Copyright (C) 2016 venshine.cn@gmail.com
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
