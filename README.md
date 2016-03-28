@@ -9,6 +9,7 @@ Features
 * 支持循环显示数据
 * 支持选中项添加附加文本
 * 支持设置滚轮刻度
+* 支持级联功能
 
 ScreenShot
 --
@@ -18,7 +19,7 @@ Usage
 --
 ##### Gradle:
 ```groovy
-compile 'com.wx.wheelview:lib:1.0.0'
+compile 'com.wx.wheelview:lib:1.1.0'
 ```
 
 ##### Maven:
@@ -26,7 +27,7 @@ compile 'com.wx.wheelview:lib:1.0.0'
 <dependency>
   <groupId>com.wx.wheelview</groupId>
   <artifactId>lib</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <type>pom</type>
 </dependency>
 ```
@@ -67,6 +68,8 @@ History
 --
 * 1.0.0(2016-03-24)
     - 完成滚轮控件
+* 1.1.0(2016-03-28)
+    - 增加级联功能
 
 About
 --
