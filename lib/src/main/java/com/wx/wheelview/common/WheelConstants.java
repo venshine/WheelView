@@ -55,9 +55,24 @@ public class WheelConstants {
     public static final int WHEEL_SKIN_HOLO_BORDER_COLOR = Color.parseColor("#2196f3");
 
     /**
+     * 滚轮item高度
+     */
+    public static final int WHEEL_ITEM_HEIGHT = 100;
+
+    /**
      * 滚轮默认文本颜色
      */
     public static final int WHEEL_TEXT_COLOR = Color.BLACK;
+
+    /**
+     * 滚轮默认文本大小
+     */
+    public static final int WHEEL_TEXT_SIZE = 16;
+
+    /**
+     * 滚轮默认文本透明度
+     */
+    public static final float WHEEL_TEXT_ALPHA = 0.7f;
 
     /**
      * common皮肤默认选中框颜色

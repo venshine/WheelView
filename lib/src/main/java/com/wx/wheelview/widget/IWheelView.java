@@ -49,5 +49,19 @@ public interface IWheelView<T> {
      */
     void setWheelAdapter(BaseWheelAdapter<T> adapter);
 
+    /**
+     * 连接副WheelView
+     *
+     * @param wheelView
+     */
+    void join(WheelView wheelView);
+
+    /**
+     * 副WheelView数据
+     *
+     * @param datas
+     */
+    void joinDatas(List<List<T>> datas);
+
 
 }
