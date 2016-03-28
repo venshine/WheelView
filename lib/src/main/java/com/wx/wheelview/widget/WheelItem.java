@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.wx.wheelview.common.WheelConstants;
+import com.wx.wheelview.util.WheelUtils;
 
 /**
  * 滚轮Item布局，包含图片和文本
@@ -43,7 +44,9 @@ public class WheelItem extends FrameLayout {
      */
     private void init() {
         LinearLayout layout = new LinearLayout(getContext());
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, WheelConstants.WHEEL_ITEM_HEIGHT);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, WheelUtils.dip2px(getContext(),
+                WheelConstants
+                        .WHEEL_ITEM_HEIGHT));
         layout.setOrientation(LinearLayout.HORIZONTAL);
         layout.setPadding(WheelConstants.WHEEL_ITEM_PADDING, WheelConstants.WHEEL_ITEM_PADDING, WheelConstants
                 .WHEEL_ITEM_PADDING, WheelConstants.WHEEL_ITEM_PADDING);
@@ -66,7 +69,7 @@ public class WheelItem extends FrameLayout {
         mText.setIncludeFontPadding(false);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(Color.BLACK);
-        LayoutParams textParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams textParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         layout.addView(mText, textParams);
     }
 

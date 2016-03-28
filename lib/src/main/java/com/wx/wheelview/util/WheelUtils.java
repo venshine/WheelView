@@ -1,5 +1,6 @@
 package com.wx.wheelview.util;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -57,5 +58,28 @@ public class WheelUtils {
         }
     }
 
+    /**
+     * dip转换到px
+     *
+     * @param context
+     * @param dp
+     * @return
+     */
+    public static int dip2px(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
+    /**
+     * sp转换到px
+     *
+     * @param context
+     * @param sp
+     * @return
+     */
+    public static int sp2px(Context context, float sp) {
+        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+        return (int) (sp * fontScale + 0.5f);
+    }
 
 }

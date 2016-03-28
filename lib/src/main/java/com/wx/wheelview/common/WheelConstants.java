@@ -57,7 +57,7 @@ public class WheelConstants {
     /**
      * 滚轮item高度
      */
-    public static final int WHEEL_ITEM_HEIGHT = 100;
+    public static final int WHEEL_ITEM_HEIGHT = 45;
 
     /**
      * 滚轮默认文本颜色

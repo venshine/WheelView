@@ -54,10 +54,6 @@ public class CommonDrawable extends WheelDrawable {
         mCommonBorderPaint.setStrokeWidth(6);
         mCommonBorderPaint.setColor(WheelConstants.WHEEL_SKIN_COMMON_BORDER_COLOR);
 
-//        mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
-//                SHADOWS_COLORS);
-//        mBottomShadow = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
-//                SHADOWS_COLORS);
     }
 
     @Override

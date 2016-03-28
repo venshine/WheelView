@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -310,7 +311,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                 refreshCurrentPosition();
                 setVisibility(View.VISIBLE);
             }
-        }, 200);
+        }, 500);
     }
 
     /**
@@ -532,23 +533,38 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private void refreshTextView(int position, int curPosition, View
             itemView, TextView textView) {
         if (curPosition == position) { // 选中
-            textView.setTextColor(mStyle.selectedTextColor != -1 ? mStyle
+            int textColor = mStyle.selectedTextColor != -1 ? mStyle
                     .selectedTextColor : (mStyle.textColor != -1 ? mStyle
-                    .textColor : WheelConstants.WHEEL_TEXT_COLOR));
-            textView.setTextSize(mStyle.selectedTextSize != -1 ? mStyle
+                    .textColor : WheelConstants.WHEEL_TEXT_COLOR);
+            int textSize = mStyle.selectedTextSize != -1 ? mStyle
                     .selectedTextSize : (mStyle.textSize != -1 ? mStyle
-                    .textSize : WheelConstants.WHEEL_TEXT_SIZE));
-            itemView.setAlpha(1f);
+                    .textSize : WheelConstants.WHEEL_TEXT_SIZE);
+            setTextView(itemView, textView, textColor, textSize, 1.0f);
         } else {    // 未选中
-            textView.setTextColor(mStyle.textColor != -1 ? mStyle.textColor :
-                    WheelConstants.WHEEL_TEXT_COLOR);
-            textView.setTextSize(mStyle.textSize != -1 ? mStyle.textSize :
-                    WheelConstants.WHEEL_TEXT_SIZE);
+            int textColor = mStyle.textColor != -1 ? mStyle.textColor :
+                    WheelConstants.WHEEL_TEXT_COLOR;
+            int textSize = mStyle.textSize != -1 ? mStyle.textSize :
+                    WheelConstants.WHEEL_TEXT_SIZE;
             int delta = Math.abs(position - curPosition);
             float alpha = (float) Math.pow(mStyle.textAlpha != -1 ? mStyle.textAlpha : WheelConstants
                     .WHEEL_TEXT_ALPHA, delta);
-            itemView.setAlpha(alpha);
+            setTextView(itemView, textView, textColor, textSize, alpha);
         }
+    }
+
+    /**
+     * 设置TextView
+     *
+     * @param itemView
+     * @param textView
+     * @param textColor
+     * @param textSize
+     * @param textAlpha
+     */
+    private void setTextView(View itemView, TextView textView, int textColor, int textSize, float textAlpha) {
+        textView.setTextColor(textColor);
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
+        itemView.setAlpha(textAlpha);
     }
 
     @Override

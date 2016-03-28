@@ -43,6 +43,11 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
     }
 
     @Override
+    public boolean isEnabled(int position) {
+        return false;
+    }
+
+    @Override
     public final View getView(int position, View convertView, ViewGroup parent) {
         if (mLoop) {
             position = position % mList.size();
