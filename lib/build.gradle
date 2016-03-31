@@ -35,8 +35,8 @@ task makeJar(type: Copy) {
     rename ('classes.jar', 'wheelview.jar')
 }
 
-def siteUrl = 'https://github.com/ifwx/WheelView'      // 项目的主页
-def gitUrl = 'https://github.com/ifwx/WheelView.git'   // Git仓库的url
+def siteUrl = 'https://github.com/venshine/WheelView'      // 项目的主页
+def gitUrl = 'https://github.com/venshine/WheelView.git'   // Git仓库的url
 group = "com.wx.wheelview"                                        // Maven Group ID for the artifact，一般填你唯一的包名
 install {
     repositories.mavenInstaller {
@@ -56,9 +56,9 @@ install {
                 }
                 developers {
                     developer {
-                        id 'ifwx'		//填写的一些基本信息
-                        name 'fengwx'
-                        email 'fengwx.cn@gmail.com'
+                        id 'venshine'		//填写的一些基本信息
+                        name 'venshine'
+                        email 'venshine.cn@gmail.com'
                     }
                 }
                 scm {
