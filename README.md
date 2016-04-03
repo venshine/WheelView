@@ -19,21 +19,21 @@ Usage
 --
 ##### Gradle:
 ```groovy
-compile 'com.wx.wheelview:lib:1.1.0'
+compile 'com.wx.wheelview:wheelview:1.2.0'
 ```
 
 ##### Maven:
 ```xml
 <dependency>
   <groupId>com.wx.wheelview</groupId>
-  <artifactId>lib</artifactId>
-  <version>1.1.0</version>
+  <artifactId>wheelview</artifactId>
+  <version>1.2.0</version>
   <type>pom</type>
 </dependency>
 ```
 
 ##### 导入Eclipse:
-[下载jar包](https://github.com/ifwx/WheelView/blob/master/lib/wheelview.jar)
+[下载jar包](https://github.com/ifwx/WheelView/blob/master/wheelview/wheelview.jar)
 
 Demo
 --
