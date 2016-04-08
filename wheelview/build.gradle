@@ -2,7 +2,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-version = "1.2.0"
+// This is the library version used when deploying the artifact
+version = "1.2.2"
 
 android {
     compileSdkVersion 23
@@ -12,8 +13,8 @@ android {
     defaultConfig {
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 3
-        versionName "1.2.0"
+        versionCode 5
+        versionName "1.2.2"
     }
     buildTypes {
         release {
@@ -32,21 +33,24 @@ task makeJar(type: Copy) {
     from('build/intermediates/bundles/release/')
     into('build/libs/')
     include('classes.jar')
-    rename ('classes.jar', 'wheelview.jar')
+    rename('classes.jar', 'wheelview.jar')
 }
 
-def siteUrl = 'https://github.com/venshine/WheelView'      // 项目的主页
-def gitUrl = 'https://github.com/venshine/WheelView.git'   // Git仓库的url
-group = "com.wx.wheelview"                                        // Maven Group ID for the artifact，一般填你唯一的包名
+def siteUrl = 'https://github.com/venshine/WheelView'      // Homepage URL of the library
+def gitUrl = 'https://github.com/venshine/WheelView.git'   // Git repository URL
+group = "com.wx.wheelview"                                 // Maven Group ID for the artifact
 install {
     repositories.mavenInstaller {
         // This generates POM.xml with proper parameters
         pom {
             project {
                 packaging 'aar'
+
                 // Add your description here
-                name 'Android WheelView Widget' 	//项目描述
+                name 'WheelView'
+                description 'Android WheelView Widget'
                 url siteUrl
+
                 // Set your license
                 licenses {
                     license {
@@ -56,7 +60,7 @@ install {
                 }
                 developers {
                     developer {
-                        id 'venshine'		//填写的一些基本信息
+                        id 'venshine'
                         name 'venshine'
                         email 'venshine.cn@gmail.com'
                     }
@@ -70,40 +74,60 @@ install {
         }
     }
 }
+
 task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
+
 task javadoc(type: Javadoc) {
     source = android.sourceSets.main.java.srcDirs
-    classpath += configurations.compile
     classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
 }
+
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
 }
+
 javadoc {
-    options{
+    options {
         encoding "UTF-8"
     }
 }
+
 artifacts {
     archives javadocJar
     archives sourcesJar
 }
+
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
+
     configurations = ['archives']
     pkg {
         repo = "maven"
-        name = "WheelView"	//发布到JCenter上的项目名字
+        // it is the name that appears in bintray when logged
+        name = "WheelView"
         websiteUrl = siteUrl
         vcsUrl = gitUrl
         licenses = ["Apache-2.0"]
         publish = true
+        version {
+            gpg {
+                sign = true //Determines whether to GPG sign the files. The default is false
+                passphrase = properties.getProperty("bintray.gpg.password") //Optional. The passphrase for GPG signing'
+            }
+//            mavenCentralSync {
+//                sync = true //Optional (true by default). Determines whether to sync the version to Maven Central.
+//                user = properties.getProperty("bintray.oss.user") //OSS user token
+//                password = properties.getProperty("bintray.oss.password") //OSS user password
+//                close = '1'
+//                //Optional property. By default the staging repository is closed and artifacts are released to Maven Central. You can optionally turn this behaviour off (by puting 0 as value) and release the version manually.
+//            }
+        }
     }
 }
