@@ -10,6 +10,7 @@ Features
 * 支持选中项添加附加文本
 * 支持设置滚轮刻度
 * 支持联动功能
+* 支持嵌入滚动控件中([NestedScrollView](https://github.com/venshine/WheelView/blob/master/wheelview/src/main/java/com/wx/wheelview/widget/NestedScrollView.java))
 
 ScreenShot
 --
@@ -19,17 +20,7 @@ Usage
 --
 ##### Gradle:
 ```groovy
-compile 'com.wx.wheelview:wheelview:1.2.0'
-```
-
-##### Maven:
-```xml
-<dependency>
-  <groupId>com.wx.wheelview</groupId>
-  <artifactId>wheelview</artifactId>
-  <version>1.2.0</version>
-  <type>pom</type>
-</dependency>
+compile 'com.wx.wheelview:wheelview:1.2.3'
 ```
 
 ##### 导入Eclipse:
@@ -70,6 +61,8 @@ History
     - 完成滚轮控件
 * 1.1.0(2016-03-28)
     - 支持联动功能
+* 1.2.3(2016-04-14)
+    - 支持嵌入滚动控件
 
 About
 --
