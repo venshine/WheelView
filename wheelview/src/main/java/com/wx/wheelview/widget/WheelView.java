@@ -27,6 +27,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -98,6 +99,14 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         }
     };
 
+    private OnTouchListener mTouchListener = new OnTouchListener() {
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        }
+    };
+
     private OnScrollListener onScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -166,6 +175,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
         mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
+        setTag(WheelConstants.TAG);
         setVerticalScrollBarEnabled(false);
         setScrollingCacheEnabled(false);
         setCacheColorHint(Color.TRANSPARENT);
@@ -173,7 +183,14 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         setOverScrollMode(OVER_SCROLL_NEVER);
         setDividerHeight(0);
         setOnScrollListener(onScrollListener);
+        setOnTouchListener(mTouchListener);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setNestedScrollingEnabled(true);
+        }
+        addOnGlobalLayoutListener();
+    }
 
+    private void addOnGlobalLayoutListener() {
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
                 .OnGlobalLayoutListener() {
             @Override

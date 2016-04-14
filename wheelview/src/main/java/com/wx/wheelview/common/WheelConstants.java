@@ -25,6 +25,11 @@ import android.graphics.Color;
 public class WheelConstants {
 
     /**
+     * 滚轮tag
+     */
+    public static final String TAG = "com.wx.wheelview";
+
+    /**
      * 滚轮每一项的内边距
      */
     public static final int WHEEL_ITEM_PADDING = 20;
@@ -67,7 +72,7 @@ public class WheelConstants {
     /**
      * holo皮肤默认选中框颜色
      */
-    public static final int WHEEL_SKIN_HOLO_BORDER_COLOR = Color.parseColor("#2196f3");
+    public static final int WHEEL_SKIN_HOLO_BORDER_COLOR = Color.parseColor("#83cde6");
 
     /**
      * 滚轮item高度
