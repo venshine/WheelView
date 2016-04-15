@@ -119,4 +119,9 @@ public class WheelConstants {
      */
     public static final int WHEEL_SCROLL_DELAY_DURATION = 600;
 
+    /**
+     * dialog默认颜色
+     */
+    public static final int DIALOG_WHEEL_COLOR = WHEEL_SKIN_HOLO_BORDER_COLOR;
+
 }

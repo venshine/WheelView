@@ -568,14 +568,15 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             int textColor = mStyle.selectedTextColor != -1 ? mStyle
                     .selectedTextColor : (mStyle.textColor != -1 ? mStyle
                     .textColor : WheelConstants.WHEEL_TEXT_COLOR);
-            int textSize = mStyle.selectedTextSize != -1 ? mStyle
-                    .selectedTextSize : (mStyle.textSize != -1 ? mStyle
-                    .textSize : WheelConstants.WHEEL_TEXT_SIZE);
+            float defTextSize = mStyle.textSize != -1 ? mStyle.textSize : WheelConstants.WHEEL_TEXT_SIZE;
+            float textSize = mStyle.selectedTextSize != -1 ? mStyle
+                    .selectedTextSize : (mStyle.selectedTextZoom != -1 ? (defTextSize * mStyle.selectedTextZoom) :
+                    defTextSize);
             setTextView(itemView, textView, textColor, textSize, 1.0f);
         } else {    // 未选中
             int textColor = mStyle.textColor != -1 ? mStyle.textColor :
                     WheelConstants.WHEEL_TEXT_COLOR;
-            int textSize = mStyle.textSize != -1 ? mStyle.textSize :
+            float textSize = mStyle.textSize != -1 ? mStyle.textSize :
                     WheelConstants.WHEEL_TEXT_SIZE;
             int delta = Math.abs(position - curPosition);
             float alpha = (float) Math.pow(mStyle.textAlpha != -1 ? mStyle.textAlpha : WheelConstants
@@ -593,7 +594,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param textSize
      * @param textAlpha
      */
-    private void setTextView(View itemView, TextView textView, int textColor, int textSize, float textAlpha) {
+    private void setTextView(View itemView, TextView textView, int textColor, float textSize, float textAlpha) {
         textView.setTextColor(textColor);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
         itemView.setAlpha(textAlpha);
@@ -633,6 +634,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         public int textSize = -1;// 文本大小
         public int selectedTextSize = -1;   // 选中文本大小
         public float textAlpha = -1;  // 文本透明度(0f ~ 1f)
+        public float selectedTextZoom = -1; // 选中文本放大倍数
 
         public WheelViewStyle() {
         }
@@ -645,6 +647,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             this.textSize = style.textSize;
             this.selectedTextSize = style.selectedTextSize;
             this.textAlpha = style.textAlpha;
+            this.selectedTextZoom = style.selectedTextZoom;
         }
 
     }

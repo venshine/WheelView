@@ -18,12 +18,14 @@ package com.wx.wheelview.demo;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 
 import com.wx.wheelview.adapter.ArrayWheelAdapter;
 import com.wx.wheelview.adapter.SimpleWheelAdapter;
 import com.wx.wheelview.common.WheelData;
 import com.wx.wheelview.util.WheelUtils;
 import com.wx.wheelview.widget.WheelView;
+import com.wx.wheelview.widget.WheelViewDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -134,6 +136,12 @@ public class MainActivity extends Activity {
         style.textColor = Color.DKGRAY;
         style.selectedTextColor = Color.GREEN;
         myWheelView.setStyle(style);
+    }
+
+    public void showDialog(View view) {
+        WheelViewDialog dialog = new WheelViewDialog(this);
+        dialog.setTitle("wheelview dialog").setItems(createArrays()).setButtonText("确定").setDialogStyle(Color
+                .parseColor("#ff9900")).setCount(5).show();
     }
 
     private List<String> createMainDatas() {

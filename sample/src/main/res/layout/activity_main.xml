@@ -83,5 +83,14 @@
                 android:layout_margin="5dp"
                 android:layout_weight="1"/>
         </LinearLayout>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="10dp"
+            android:onClick="showDialog"
+            android:text="wheelview dialog"/>
+
     </LinearLayout>
 </com.wx.wheelview.widget.NestedScrollView>
