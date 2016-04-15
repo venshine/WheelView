@@ -16,6 +16,8 @@ Features
 ScreenShot
 --
 ![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot.gif)
+![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot1.png)
+![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot2.png)
 
 Usage
 --
