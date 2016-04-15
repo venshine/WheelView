@@ -141,7 +141,7 @@ public class MainActivity extends Activity {
     public void showDialog(View view) {
         WheelViewDialog dialog = new WheelViewDialog(this);
         dialog.setTitle("wheelview dialog").setItems(createArrays()).setButtonText("确定").setDialogStyle(Color
-                .parseColor("#ff9900")).setCount(5).show();
+                .parseColor("#6699ff")).setCount(5).show();
     }
 
     private List<String> createMainDatas() {
