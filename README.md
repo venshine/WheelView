@@ -11,6 +11,7 @@ Features
 * 支持设置滚轮刻度
 * 支持联动功能
 * 支持嵌入滚动控件中([NestedScrollView](https://github.com/venshine/WheelView/blob/master/wheelview/src/main/java/com/wx/wheelview/widget/NestedScrollView.java))
+* 支持滚轮对话框
 
 ScreenShot
 --
@@ -20,7 +21,7 @@ Usage
 --
 ##### Gradle:
 ```groovy
-compile 'com.wx.wheelview:wheelview:1.2.3'
+compile 'com.wx.wheelview:wheelview:1.3.0'
 ```
 
 ##### 导入Eclipse:
@@ -63,6 +64,8 @@ History
     - 支持联动功能
 * 1.2.3(2016-04-14)
     - 支持嵌入滚动控件
+* 1.3.0(2016-04-15)
+    - 支持滚轮对话框
 
 About
 --
