@@ -12,6 +12,7 @@ Features
 * 支持联动功能
 * 支持嵌入滚动控件中([NestedScrollView](https://github.com/venshine/WheelView/blob/master/wheelview/src/main/java/com/wx/wheelview/widget/NestedScrollView.java))
 * 支持滚轮对话框
+* 支持滚轮选中项点击事件
 
 ScreenShot
 --
@@ -68,6 +69,8 @@ History
     - 支持嵌入滚动控件
 * 1.3.0(2016-04-15)
     - 支持滚轮对话框
+* 1.3.1(2016-04-18)
+    - 增加滚轮选中项点击事件
 
 About
 --
