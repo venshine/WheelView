@@ -173,11 +173,21 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         init();
     }
 
+    /**
+     * 设置滚轮滑动停止时事件，监听滚轮选中项
+     *
+     * @param onWheelItemSelectedListener
+     */
     public void setOnWheelItemSelectedListener(OnWheelItemSelectedListener<T>
                                                        onWheelItemSelectedListener) {
         mOnWheelItemSelectedListener = onWheelItemSelectedListener;
     }
 
+    /**
+     * 设置滚轮选中项点击事件
+     *
+     * @param onWheelItemClickListener
+     */
     public void setOnWheelItemClickListener(OnWheelItemClickListener<T> onWheelItemClickListener) {
         mOnWheelItemClickListener = onWheelItemClickListener;
     }
@@ -291,12 +301,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      */
     @Override
     public void setWheelSize(int wheelSize) {
-        if (wheelSize < 3 || ((wheelSize & 1) == 0)) {
+        if ((wheelSize & 1) == 0) {
             throw new WheelViewException("wheel size must be an odd number.");
-        }
-        if (mList != null && wheelSize > mList.size()) {
-            throw new WheelViewException("wheel datas cannot be smaller than " +
-                    "wheel size.");
         }
         mWheelSize = wheelSize;
         if (mWheelAdapter != null) {
@@ -320,6 +326,11 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         }
     }
 
+    /**
+     * 设置滚轮选中项是否可点击
+     *
+     * @param clickable
+     */
     @Override
     public void setWheelClickable(boolean clickable) {
         if (clickable != mClickable) {
@@ -497,7 +508,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     }
 
     /**
-     * 获得wheel数据总数
+     * 获得滚轮数据总数
      *
      * @return
      */
