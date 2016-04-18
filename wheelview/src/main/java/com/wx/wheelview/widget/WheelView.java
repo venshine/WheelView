@@ -471,9 +471,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      */
     @Override
     public void setWheelData(List<T> list) {
-        if (list == null || (list != null && list.size() < mWheelSize)) {
-            throw new WheelViewException("wheel datas cannot be smaller than " +
-                    "wheel size.");
+        if (WheelUtils.isEmpty(list)) {
+            throw new WheelViewException("wheel datas are error!");
         }
         mList = list;
         if (mWheelAdapter != null) {

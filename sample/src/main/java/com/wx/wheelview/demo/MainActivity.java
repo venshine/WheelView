@@ -152,7 +152,7 @@ public class MainActivity extends Activity {
     }
 
     private List<String> createMainDatas() {
-        String[] strings = {"北京", "河北", "山东", "江苏", "河南", "山西", "湖北", "湖南", "浙江", "辽宁"};
+        String[] strings = {"北京", "河北", "山东", "江苏", "河南", "山西", "湖北", "湖南", "浙江", "辽宁", "香港"};
         return Arrays.asList(strings);
     }
 
@@ -167,6 +167,7 @@ public class MainActivity extends Activity {
         String[] s8 = {"长沙", "衡阳", "湘潭", "岳阳", "常德", "张家界", "怀化", "常德", "株洲"};
         String[] s9 = {"杭州", "绍兴", "温州", "嘉兴", "金华", "舟山", "台州"};
         String[] s10 = {"沈阳", "鞍山", "本溪", "铁岭", "锦州", "辽阳", "营口", "抚顺", "丹东", "葫芦岛"};
+        String[] s11 = {"香港"};
         List<List<String>> lists = new ArrayList<List<String>>();
         lists.add(Arrays.asList(s1));
         lists.add(Arrays.asList(s2));
@@ -178,6 +179,7 @@ public class MainActivity extends Activity {
         lists.add(Arrays.asList(s8));
         lists.add(Arrays.asList(s9));
         lists.add(Arrays.asList(s10));
+        lists.add(Arrays.asList(s11));
         return lists;
     }
 
