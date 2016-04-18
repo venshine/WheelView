@@ -77,11 +77,9 @@ Use the WheelView as a View, Java and XML are both supported.
 | void joinDatas(List<List<T>> datas)	     | 副WheelView数据（联动设置） |
 | int getCurrentPosition()  	     | 获取当前滚轮位置 |
 | T getSelectionItem()  	     | 获取当前滚轮位置的数据 |
-| void setExtraText(String text, int textColor, int textSize, int
-              margin) 	     | 设置选中行附加文本 |
+| void setExtraText(String text, int textColor, int textSize, int margin)     	     | 设置选中行附加文本 |
 | int getWheelCount() 	     | 获得滚轮数据总数 |
-| void setOnWheelItemSelectedListener(OnWheelItemSelectedListener<T>
-                                                         onWheelItemSelectedListener)  	     | 设置滚轮滑动停止时事件，监听滚轮选中项 |
+| void setOnWheelItemSelectedListener(OnWheelItemSelectedListener<T> onWheelItemSelectedListener)  	     | 设置滚轮滑动停止时事件，监听滚轮选中项 |
 | void setOnWheelItemClickListener(OnWheelItemClickListener<T> onWheelItemClickListener) 	     | 设置滚轮选中项点击事件 |
 
 History
