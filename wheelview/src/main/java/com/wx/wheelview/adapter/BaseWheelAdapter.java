@@ -19,8 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import com.wx.wheelview.widget.IWheelView;
 import com.wx.wheelview.util.WheelUtils;
+import com.wx.wheelview.widget.IWheelView;
 
 import java.util.List;
 
@@ -37,7 +37,18 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
 
     protected int mWheelSize = IWheelView.WHEEL_SIZE;
 
+    private int mCurrentPositon = -1;
+
     protected abstract View bindView(int position, View convertView, ViewGroup parent);
+
+    /**
+     * 设置当前刻度
+     *
+     * @param position
+     */
+    public final void setCurrentPosition(int position) {
+        mCurrentPositon = position;
+    }
 
     @Override
     public final int getCount() {
@@ -58,7 +69,21 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
     }
 
     @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
     public boolean isEnabled(int position) {
+        if (mLoop) {
+            if (position % mList.size() == mCurrentPositon) {
+                return true;
+            }
+        } else {
+            if (position == (mCurrentPositon + mWheelSize / 2)) {
+                return true;
+            }
+        }
         return false;
     }
 

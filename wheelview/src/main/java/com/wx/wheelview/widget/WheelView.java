@@ -32,6 +32,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -78,6 +79,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     private OnWheelItemSelectedListener<T> mOnWheelItemSelectedListener;
 
+    private OnWheelItemClickListener<T> mOnWheelItemClickListener;
+
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -99,6 +102,15 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         }
     };
 
+    private OnItemClickListener mOnItemClickListener = new OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            if (mOnWheelItemClickListener != null) {
+                mOnWheelItemClickListener.onItemClick(getCurrentPosition(), getSelectionItem());
+            }
+        }
+    };
+
     private OnTouchListener mTouchListener = new OnTouchListener() {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
@@ -107,7 +119,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         }
     };
 
-    private OnScrollListener onScrollListener = new OnScrollListener() {
+    private OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
             if (scrollState == SCROLL_STATE_IDLE) {
@@ -165,6 +177,10 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         mOnWheelItemSelectedListener = onWheelItemSelectedListener;
     }
 
+    public void setOnWheelItemClickListener(OnWheelItemClickListener<T> onWheelItemClickListener) {
+        mOnWheelItemClickListener = onWheelItemClickListener;
+    }
+
     /**
      * 初始化
      */
@@ -182,7 +198,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         setFadingEdgeLength(0);
         setOverScrollMode(OVER_SCROLL_NEVER);
         setDividerHeight(0);
-        setOnScrollListener(onScrollListener);
+        setOnItemClickListener(mOnItemClickListener);
+        setOnScrollListener(mOnScrollListener);
         setOnTouchListener(mTouchListener);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             setNestedScrollingEnabled(true);
@@ -520,6 +537,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             return;
         }
         mCurrentPositon = position;
+        mWheelAdapter.setCurrentPosition(position);
         mHandler.removeMessages(WheelConstants.WHEEL_SCROLL_HANDLER_WHAT);
         mHandler.sendEmptyMessageDelayed(WheelConstants
                 .WHEEL_SCROLL_HANDLER_WHAT, WheelConstants
@@ -623,6 +641,10 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     public interface OnWheelItemSelectedListener<T> {
         void onItemSelected(int position, T t);
+    }
+
+    public interface OnWheelItemClickListener<T> {
+        void onItemClick(int position, T t);
     }
 
     public static class WheelViewStyle {
