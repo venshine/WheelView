@@ -52,7 +52,7 @@ public class MainActivity extends Activity {
     }
 
     /**
-     * 级联WheelView
+     * 联动WheelView
      */
     private void initWheel1() {
         mainWheelView = (WheelView) findViewById(R.id.main_wheelview);
