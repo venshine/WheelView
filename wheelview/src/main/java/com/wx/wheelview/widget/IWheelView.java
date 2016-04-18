@@ -37,6 +37,18 @@ public interface IWheelView<T> {
     int WHEEL_SIZE = 3;
 
     /**
+     * 滚轮选中刻度是否可点击
+     */
+    boolean CLICKABLE = false;
+
+    /**
+     * 设置滚轮选中刻度是否可点击
+     *
+     * @param clickable
+     */
+    void setWheelClickable(boolean clickable);
+
+    /**
      * 设置滚轮是否循环滚动
      *
      * @param loop

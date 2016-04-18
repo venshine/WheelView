@@ -37,6 +37,8 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
 
     protected int mWheelSize = IWheelView.WHEEL_SIZE;
 
+    protected boolean mClickable = IWheelView.CLICKABLE;
+
     private int mCurrentPositon = -1;
 
     protected abstract View bindView(int position, View convertView, ViewGroup parent);
@@ -70,18 +72,20 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
 
     @Override
     public boolean areAllItemsEnabled() {
-        return false;
+        return mClickable ? false : true;
     }
 
     @Override
     public boolean isEnabled(int position) {
-        if (mLoop) {
-            if (position % mList.size() == mCurrentPositon) {
-                return true;
-            }
-        } else {
-            if (position == (mCurrentPositon + mWheelSize / 2)) {
-                return true;
+        if (mClickable) {
+            if (mLoop) {
+                if (position % mList.size() == mCurrentPositon) {
+                    return true;
+                }
+            } else {
+                if (position == (mCurrentPositon + mWheelSize / 2)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -114,6 +118,14 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
             }
         }
         return view;
+    }
+
+    public final BaseWheelAdapter setClickable(boolean clickable) {
+        if (clickable != mClickable) {
+            mClickable = clickable;
+            super.notifyDataSetChanged();
+        }
+        return this;
     }
 
     public final BaseWheelAdapter setLoop(boolean loop) {

@@ -64,6 +64,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private int mExtraTextSize; // 附加文本大小
     private int mExtraMargin;   // 附加文本外边距
     private int mSelection = 0; // 选中位置
+    private boolean mClickable = CLICKABLE; // 是否可点击
 
     private Paint mTextPaint;   // 附加文本画笔
 
@@ -319,6 +320,16 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         }
     }
 
+    @Override
+    public void setWheelClickable(boolean clickable) {
+        if (clickable != mClickable) {
+            mClickable = clickable;
+            if (mWheelAdapter != null) {
+                mWheelAdapter.setClickable(clickable);
+            }
+        }
+    }
+
     /**
      * 重置数据
      *
@@ -450,7 +461,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     public void setWheelAdapter(BaseWheelAdapter<T> adapter) {
         super.setAdapter(adapter);
         mWheelAdapter = adapter;
-        mWheelAdapter.setData(mList).setLoop(mLoop).setWheelSize(mWheelSize);
+        mWheelAdapter.setData(mList).setWheelSize(mWheelSize).setLoop(mLoop).setClickable(mClickable);
     }
 
     /**

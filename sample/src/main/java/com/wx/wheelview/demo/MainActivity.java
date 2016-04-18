@@ -118,6 +118,13 @@ public class MainActivity extends Activity {
         simpleWheelView.setWheelData(createDatas());
         simpleWheelView.setSkin(WheelView.Skin.None);
         simpleWheelView.setLoop(true);
+        simpleWheelView.setWheelClickable(true);
+        simpleWheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener() {
+            @Override
+            public void onItemClick(int position, Object o) {
+                WheelUtils.log("click:" + position);
+            }
+        });
         simpleWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<WheelData>() {
             @Override
             public void onItemSelected(int position, WheelData data) {

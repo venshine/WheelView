@@ -23,11 +23,11 @@ Usage
 --
 ##### Gradle:
 ```groovy
-compile 'com.wx.wheelview:wheelview:1.3.0'
+compile 'com.wx.wheelview:wheelview:1.3.1'
 ```
 
 ##### 导入Eclipse:
-[下载jar包](https://github.com/ifwx/WheelView/blob/master/wheelview/wheelview.jar)
+[下载jar包](https://github.com/ifwx/WheelView/blob/master/wheelview/wheelview_1.3.1.jar)
 
 Demo
 --
