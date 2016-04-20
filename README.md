@@ -74,7 +74,7 @@ Use the WheelView as a View, Java and XML are both supported.
 | void setSelection(final int selection) 	     | 设置滚轮位置 |
 | int getSelection() 	     | 获取滚轮位置 |
 | void join(WheelView wheelView)  	     | 连接副WheelView（联动设置） |
-| void joinDatas(List<List<T>> datas)	     | 副WheelView数据（联动设置） |
+| void joinDatas(HashMap<String, List<T>> map)	     | 副WheelView数据（联动设置） |
 | int getCurrentPosition()  	     | 获取当前滚轮位置 |
 | T getSelectionItem()  	     | 获取当前滚轮位置的数据 |
 | void setExtraText(String text, int textColor, int textSize, int margin)     	     | 设置选中行附加文本 |
