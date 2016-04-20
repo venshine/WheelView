@@ -17,6 +17,7 @@ package com.wx.wheelview.widget;
 
 import com.wx.wheelview.adapter.BaseWheelAdapter;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -86,9 +87,9 @@ public interface IWheelView<T> {
     /**
      * 副WheelView数据
      *
-     * @param datas
+     * @param map
      */
-    void joinDatas(List<List<T>> datas);
+    void joinDatas(HashMap<String, List<T>> map);
 
 
 }

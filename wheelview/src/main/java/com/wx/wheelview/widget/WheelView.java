@@ -45,6 +45,7 @@ import com.wx.wheelview.common.WheelViewException;
 import com.wx.wheelview.graphics.DrawableFactory;
 import com.wx.wheelview.util.WheelUtils;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -74,7 +75,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     private WheelView mJoinWheelView;   // 副WheelView
 
-    private List<List<T>> mJoinList;    // 副滚轮数据列表
+    private HashMap<String, List<T>> mJoinMap;    // 副滚轮数据列表
 
     private BaseWheelAdapter<T> mWheelAdapter;
 
@@ -91,10 +92,10 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                             (getCurrentPosition(), getSelectionItem());
                 }
                 if (mJoinWheelView != null) {
-                    if (!WheelUtils.isEmpty(mJoinList) && mJoinList.size() ==
-                            mList.size()) {
-                        mJoinWheelView.resetDataFromTop(mJoinList.get
-                                (getCurrentPosition()));
+                    if (!mJoinMap.isEmpty()) {
+                        mJoinWheelView.resetDataFromTop(mJoinMap.get(mList.get
+                                (getCurrentPosition()))
+                        );
                     } else {
                         throw new WheelViewException("JoinList is error.");
                     }
@@ -147,7 +148,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         public void onScroll(AbsListView view, int firstVisibleItem, int
                 visibleItemCount, int totalItemCount) {
             if (visibleItemCount != 0) {
-                refreshCurrentPosition();
+                refreshCurrentPosition(false);
             }
         }
     };
@@ -347,14 +348,17 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param list
      */
     public void resetDataFromTop(final List<T> list) {
+        if (WheelUtils.isEmpty(list)) {
+            throw new WheelViewException("join map data is error.");
+        }
         WheelView.this.postDelayed(new Runnable() {
             @Override
             public void run() {
                 setWheelData(list);
                 WheelView.super.setSelection(0);
-                refreshCurrentPosition();
+                refreshCurrentPosition(true);
             }
-        }, 200);
+        }, 10);
     }
 
     /**
@@ -379,7 +383,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             @Override
             public void run() {
                 WheelView.super.setSelection(getRealPosition(selection));
-                refreshCurrentPosition();
+                refreshCurrentPosition(false);
                 setVisibility(View.VISIBLE);
             }
         }, 500);
@@ -401,10 +405,10 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     /**
      * 副WheelView数据
      *
-     * @param datas
+     * @param map
      */
-    public void joinDatas(List<List<T>> datas) {
-        mJoinList = datas;
+    public void joinDatas(HashMap<String, List<T>> map) {
+        mJoinMap = map;
     }
 
     /**
@@ -483,7 +487,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     @Override
     public void setWheelData(List<T> list) {
         if (WheelUtils.isEmpty(list)) {
-            throw new WheelViewException("wheel datas are error!");
+            throw new WheelViewException("wheel datas are error.");
         }
         mList = list;
         if (mWheelAdapter != null) {
@@ -534,8 +538,10 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     /**
      * 刷新当前位置
+     *
+     * @param join
      */
-    private void refreshCurrentPosition() {
+    private void refreshCurrentPosition(boolean join) {
         if (getChildAt(0) == null || mItemH == 0) {
             return;
         }
@@ -554,7 +560,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         if (mLoop) {
             position = (position + mWheelSize / 2) % getWheelCount();
         }
-        if (position == mCurrentPositon) {
+        if (position == mCurrentPositon && !join) {
             return;
         }
         mCurrentPositon = position;

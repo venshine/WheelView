@@ -24,7 +24,7 @@ Usage
 --
 ##### Gradle:
 ```groovy
-compile 'com.wx.wheelview:wheelview:1.3.2'
+compile 'com.wx.wheelview:wheelview:1.3.3'
 ```
 
 ##### 导入Eclipse:

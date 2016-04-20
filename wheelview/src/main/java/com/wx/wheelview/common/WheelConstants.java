@@ -117,7 +117,7 @@ public class WheelConstants {
     /**
      * 滚轮滑动时展示选中项延迟时间
      */
-    public static final int WHEEL_SCROLL_DELAY_DURATION = 600;
+    public static final int WHEEL_SCROLL_DELAY_DURATION = 300;
 
     /**
      * dialog默认颜色

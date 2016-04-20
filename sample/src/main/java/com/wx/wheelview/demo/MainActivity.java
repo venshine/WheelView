@@ -29,6 +29,7 @@ import com.wx.wheelview.widget.WheelViewDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -38,7 +39,8 @@ import java.util.List;
  */
 public class MainActivity extends Activity {
 
-    private WheelView mainWheelView, subWheelView, hourWheelView, minuteWheelView, secondWheelView, commonWheelView,
+    private WheelView mainWheelView, subWheelView, childWheelView, hourWheelView, minuteWheelView, secondWheelView,
+            commonWheelView,
             simpleWheelView, myWheelView;
 
     @Override
@@ -67,10 +69,19 @@ public class MainActivity extends Activity {
         subWheelView = (WheelView) findViewById(R.id.sub_wheelview);
         subWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         subWheelView.setSkin(WheelView.Skin.Holo);
-        subWheelView.setWheelData(createSubDatas().get(mainWheelView.getSelection()));
+        subWheelView.setWheelData(createSubDatas().get(createMainDatas().get(mainWheelView.getSelection())));
         subWheelView.setStyle(style);
         mainWheelView.join(subWheelView);
         mainWheelView.joinDatas(createSubDatas());
+
+        childWheelView = (WheelView) findViewById(R.id.child_wheelview);
+        childWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
+        childWheelView.setSkin(WheelView.Skin.Holo);
+        childWheelView.setWheelData(createChildDatas().get(createSubDatas().get(createMainDatas().get(mainWheelView
+                .getSelection())).get(subWheelView.getSelection())));
+        childWheelView.setStyle(style);
+        subWheelView.join(childWheelView);
+        subWheelView.joinDatas(createChildDatas());
     }
 
     /**
@@ -152,36 +163,42 @@ public class MainActivity extends Activity {
     }
 
     private List<String> createMainDatas() {
-        String[] strings = {"北京", "河北", "山东", "江苏", "河南", "山西", "湖北", "湖南", "浙江", "辽宁", "香港"};
+        String[] strings = {"黑龙江", "吉林", "辽宁"};
         return Arrays.asList(strings);
     }
 
-    private List<List<String>> createSubDatas() {
-        String[] s1 = {"海淀区", "朝阳区", "昌平区", "西城区", "东城区", "大兴区", "房山区", "顺义区", "石景山区"};
-        String[] s2 = {"石家庄", "唐山", "保定", "秦皇岛", "承德", "张家口", "廊坊", "衡水", "沧州", "邯郸"};
-        String[] s3 = {"济南", "潍坊", "淄博", "威海", "临沂", "枣庄", "烟台", "日照", "德州", "聊城", "莱芜"};
-        String[] s4 = {"南京", "无锡", "常州", "扬州", "苏州", "连云港", "盐城", "淮安", "宿迁", "南通"};
-        String[] s5 = {"郑州", "洛阳", "焦作", "商丘", "安阳", "开封", "新乡", "信阳"};
-        String[] s6 = {"太原", "大同", "阳泉", "长治", "运城", "吕梁"};
-        String[] s7 = {"武汉", "襄樊", "宜昌", "孝感", "黄冈", "咸宁", "黄石"};
-        String[] s8 = {"长沙", "衡阳", "湘潭", "岳阳", "常德", "张家界", "怀化", "常德", "株洲"};
-        String[] s9 = {"杭州", "绍兴", "温州", "嘉兴", "金华", "舟山", "台州"};
-        String[] s10 = {"沈阳", "鞍山", "本溪", "铁岭", "锦州", "辽阳", "营口", "抚顺", "丹东", "葫芦岛"};
-        String[] s11 = {"香港"};
-        List<List<String>> lists = new ArrayList<List<String>>();
-        lists.add(Arrays.asList(s1));
-        lists.add(Arrays.asList(s2));
-        lists.add(Arrays.asList(s3));
-        lists.add(Arrays.asList(s4));
-        lists.add(Arrays.asList(s5));
-        lists.add(Arrays.asList(s6));
-        lists.add(Arrays.asList(s7));
-        lists.add(Arrays.asList(s8));
-        lists.add(Arrays.asList(s9));
-        lists.add(Arrays.asList(s10));
-        lists.add(Arrays.asList(s11));
-        return lists;
+    private HashMap<String, List<String>> createSubDatas() {
+        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+        String[] strings = {"黑龙江", "吉林", "辽宁"};
+        String[] s1 = {"哈尔滨", "齐齐哈尔", "大庆"};
+        String[] s2 = {"长春", "吉林"};
+        String[] s3 = {"沈阳", "大连", "鞍山", "抚顺"};
+        String[][] ss = {s1, s2, s3};
+        for (int i = 0; i < strings.length; i++) {
+            map.put(strings[i], Arrays.asList(ss[i]));
+        }
+        return map;
     }
+
+    private HashMap<String, List<String>> createChildDatas() {
+        HashMap<String, List<String>> map = new HashMap<String, List<String>>();
+        String[] strings = {"哈尔滨", "齐齐哈尔", "大庆", "长春", "吉林", "沈阳", "大连", "鞍山", "抚顺"};
+        String[] s1 = {"道里区", "道外区", "南岗区", "香坊区"};
+        String[] s2 = {"龙沙区", "建华区", "铁锋区"};
+        String[] s3 = {"红岗区", "大同区"};
+        String[] s11 = {"南关区", "朝阳区"};
+        String[] s12 = {"龙潭区"};
+        String[] s21 = {"和平区", "皇姑区", "大东区", "铁西区"};
+        String[] s22 = {"中山区", "金州区"};
+        String[] s23 = {"铁东区", "铁西区"};
+        String[] s24 = {"新抚区", "望花区", "顺城区"};
+        String[][] ss = {s1, s2, s3, s11, s12, s21, s22, s23, s24};
+        for (int i = 0; i < strings.length; i++) {
+            map.put(strings[i], Arrays.asList(ss[i]));
+        }
+        return map;
+    }
+
 
     private ArrayList<String> createHours() {
         ArrayList<String> list = new ArrayList<String>();

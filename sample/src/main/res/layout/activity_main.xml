@@ -28,6 +28,13 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:layout_weight="1"/>
+
+            <com.wx.wheelview.widget.WheelView
+                android:id="@+id/child_wheelview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"/>
         </LinearLayout>
 
         <LinearLayout
