@@ -137,7 +137,7 @@ public class WheelViewDialog implements View.OnClickListener {
     }
 
     /**
-     * 设置dialog颜色外观
+     * 设置dialog外观颜色
      *
      * @param color
      * @return
