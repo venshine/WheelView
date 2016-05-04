@@ -81,7 +81,7 @@ Use the WheelView as a View, Java and XML are both supported.
 | int **getWheelCount**() 	     | 获得滚轮数据总数 |
 | void **setOnWheelItemSelectedListener**(OnWheelItemSelectedListener<T> onWheelItemSelectedListener) | 设置滚轮滑动停止时事件，监听滚轮选中项 |
 | void **setOnWheelItemClickListener**(OnWheelItemClickListener<T> onWheelItemClickListener) | 设置滚轮选中项点击事件 |
-| WheelViewDialog setDialogStyle(int color) | 设置Dialog外观颜色 |
+| WheelViewDialog **setDialogStyle**(int color) | 设置Dialog外观颜色 |
 
 History
 --
