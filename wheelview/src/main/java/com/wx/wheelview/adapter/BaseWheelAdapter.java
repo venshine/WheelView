@@ -66,7 +66,7 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
     }
 
     @Override
-    public final Object getItem(int position) {
+    public final T getItem(int position) {
         return !WheelUtils.isEmpty(mList) ? mList.get(position % mList.size()) : null;
     }
 

@@ -37,13 +37,13 @@ import java.util.List;
  *
  * @author venshine
  */
-public class WheelViewDialog implements View.OnClickListener {
+public class WheelViewDialog<T> implements View.OnClickListener {
 
     private TextView mTitle;
 
     private View mLine1, mLine2;
 
-    private WheelView<String> mWheelView;
+    private WheelView<T> mWheelView;
 
     private WheelView.WheelViewStyle mStyle;
 
@@ -57,7 +57,7 @@ public class WheelViewDialog implements View.OnClickListener {
 
     private int mSelectedPos;
 
-    private String mSelectedText;
+    private T mSelectedText;
 
     public WheelViewDialog(Context context) {
         mContext = context;
@@ -91,9 +91,9 @@ public class WheelViewDialog implements View.OnClickListener {
         mStyle.selectedTextZoom = 1.2f;
         mWheelView.setStyle(mStyle);
 
-        mWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<String>() {
+        mWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<T>() {
             @Override
-            public void onItemSelected(int position, String text) {
+            public void onItemSelected(int position, T text) {
                 mSelectedPos = position;
                 mSelectedText = text;
             }
@@ -253,9 +253,8 @@ public class WheelViewDialog implements View.OnClickListener {
      *
      * @param arrays
      */
-    public WheelViewDialog setItems(String[] arrays) {
-        mWheelView.setWheelData(Arrays.asList(arrays));
-        return this;
+    public WheelViewDialog setItems(T[] arrays) {
+        return setItems(Arrays.asList(arrays));
     }
 
     /**
@@ -263,7 +262,7 @@ public class WheelViewDialog implements View.OnClickListener {
      *
      * @param list
      */
-    public WheelViewDialog setItems(List<String> list) {
+    public WheelViewDialog setItems(List<T> list) {
         mWheelView.setWheelData(list);
         return this;
     }
@@ -296,7 +295,7 @@ public class WheelViewDialog implements View.OnClickListener {
         }
     }
 
-    public interface OnDialogItemClickListener {
-        void onItemClick(int position, String s);
+    public interface OnDialogItemClickListener<T> {
+        void onItemClick(int position, T s);
     }
 }

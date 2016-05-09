@@ -22,11 +22,11 @@ import android.view.ViewGroup;
 import com.wx.wheelview.widget.WheelItem;
 
 /**
- * 滚轮文本适配器
+ * 滚轮数组适配器
  *
  * @author venshine
  */
-public class ArrayWheelAdapter extends BaseWheelAdapter<String> {
+public class ArrayWheelAdapter<T> extends BaseWheelAdapter<T> {
 
     private Context mContext;
 
@@ -39,8 +39,13 @@ public class ArrayWheelAdapter extends BaseWheelAdapter<String> {
         if (convertView == null) {
             convertView = new WheelItem(mContext);
         }
-        WheelItem item = (WheelItem) convertView;
-        item.setText(mList.get(position));
+        WheelItem wheelItem = (WheelItem) convertView;
+        T item = getItem(position);
+        if (wheelItem instanceof CharSequence) {
+            wheelItem.setText((CharSequence) item);
+        } else {
+            wheelItem.setText(item.toString());
+        }
         return convertView;
     }
 
