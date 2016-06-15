@@ -28,7 +28,7 @@ compile 'com.wx.wheelview:wheelview:1.3.3'
 ```
 
 ##### 导入Eclipse:
-[下载jar包](https://github.com/ifwx/WheelView/raw/master/wheelview/wheelview_1.3.2.jar)
+[下载jar包](https://github.com/ifwx/WheelView/raw/master/wheelview/wheelview_1.3.3.jar)
 
 Demo
 --
