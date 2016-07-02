@@ -17,7 +17,6 @@ package com.wx.wheelview.widget;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -59,12 +58,12 @@ public class WheelViewDialog<T> implements View.OnClickListener {
 
     private T mSelectedText;
 
-    public WheelViewDialog(Context context) {
+    public WheelViewDialog(Context context, WheelView.WheelViewStyle wheelViewStyle) {
         mContext = context;
-        init();
+        init(wheelViewStyle);
     }
 
-    private void init() {
+    private void init(WheelView.WheelViewStyle wheelViewStyle) {
         LinearLayout layout = new LinearLayout(mContext);
         layout.setOrientation(LinearLayout.VERTICAL);
         layout.setPadding(WheelUtils.dip2px(mContext, 20), 0, WheelUtils.dip2px(mContext, 20), 0);
@@ -86,10 +85,8 @@ public class WheelViewDialog<T> implements View.OnClickListener {
         mWheelView = new WheelView(mContext);
         mWheelView.setSkin(WheelView.Skin.Holo);
         mWheelView.setWheelAdapter(new ArrayWheelAdapter(mContext));
-        mStyle = new WheelView.WheelViewStyle();
-        mStyle.textColor = Color.GRAY;
-        mStyle.selectedTextZoom = 1.2f;
-        mWheelView.setStyle(mStyle);
+  
+        mWheelView.setStyle(wheelViewStyle);
 
         mWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<T>() {
             @Override
@@ -147,8 +144,6 @@ public class WheelViewDialog<T> implements View.OnClickListener {
         mLine1.setBackgroundColor(color);
         mLine2.setBackgroundColor(color);
         mButton.setTextColor(color);
-        mStyle.selectedTextColor = color;
-        mStyle.holoBorderColor = color;
         return this;
     }
 

@@ -55,7 +55,7 @@ public class CommonDrawable extends WheelDrawable {
 
     private void init() {
         mCommonBgPaint = new Paint();
-        mCommonBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
+        mCommonBgPaint.setColor(WheelConstants
                 .WHEEL_SKIN_COMMON_BG);
 
         mCommonPaint = new Paint();
