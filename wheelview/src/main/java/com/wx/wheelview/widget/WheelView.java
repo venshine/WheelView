@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.support.annotation.FloatRange;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -610,22 +611,15 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private void refreshTextView(int position, int curPosition, View
             itemView, TextView textView) {
         if (curPosition == position) { // 选中
-            int textColor = mStyle.selectedTextColor != -1 ? mStyle
-                    .selectedTextColor : (mStyle.textColor != -1 ? mStyle
-                    .textColor : WheelConstants.WHEEL_TEXT_COLOR);
-            float defTextSize = mStyle.textSize != -1 ? mStyle.textSize : WheelConstants.WHEEL_TEXT_SIZE;
-            float textSize = mStyle.selectedTextSize != -1 ? mStyle
-                    .selectedTextSize : (mStyle.selectedTextZoom != -1 ? (defTextSize * mStyle.selectedTextZoom) :
-                    defTextSize);
+            int textColor = mStyle.selectedTextColor;
+            float defTextSize = mStyle.textSize;
+            float textSize = defTextSize * mStyle.selectedTextZoom;
             setTextView(itemView, textView, textColor, textSize, 1.0f);
         } else {    // 未选中
-            int textColor = mStyle.textColor != -1 ? mStyle.textColor :
-                    WheelConstants.WHEEL_TEXT_COLOR;
-            float textSize = mStyle.textSize != -1 ? mStyle.textSize :
-                    WheelConstants.WHEEL_TEXT_SIZE;
+            int textColor =mStyle.textColor;
+            float textSize = mStyle.textSize;
             int delta = Math.abs(position - curPosition);
-            float alpha = (float) Math.pow(mStyle.textAlpha != -1 ? mStyle.textAlpha : WheelConstants
-                    .WHEEL_TEXT_ALPHA, delta);
+            float alpha = (float) Math.pow(mStyle.textAlpha, delta);
             setTextView(itemView, textView, textColor, textSize, alpha);
         }
     }
@@ -676,16 +670,17 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     public static class WheelViewStyle {
 
-        public int backgroundColor = -1; // 背景颜色
-        public int holoBorderColor = -1;   // holo样式边框颜色
-        public int textColor = -1; // 文本颜色
-        public int selectedTextColor = -1; // 选中文本颜色
-        public int textSize = -1;// 文本大小
-        public int selectedTextSize = -1;   // 选中文本大小
-        public float textAlpha = -1;  // 文本透明度(0f ~ 1f)
-        public float selectedTextZoom = -1; // 选中文本放大倍数
+        private int backgroundColor; // 背景颜色
+        private int holoBorderColor;   // holo样式边框颜色
+        private int textColor; // 文本颜色
+        private int selectedTextColor; // 选中文本颜色
+        private int textSize;// 文本大小
+        private int selectedTextSize;   // 选中文本大小
+        private float textAlpha;  // 文本透明度(0f ~ 1f)
+        private float selectedTextZoom; // 选中文本放大倍数
 
-        public WheelViewStyle() {
+        protected WheelViewStyle() {
+            
         }
 
         public WheelViewStyle(WheelViewStyle style) {
@@ -699,6 +694,111 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             this.selectedTextZoom = style.selectedTextZoom;
         }
 
+        public int getBackgroundColor() {
+            return backgroundColor;
+        }
+
+        public int getHoloBorderColor() {
+            return holoBorderColor;
+        }
+
+        public int getUnselectedTextColor() {
+            return textColor;
+        }
+
+        public int getSelectedTextColor() {
+            return selectedTextColor;
+        }
+
+        public int getUnselectedTextSize() {
+            return textSize;
+        }
+
+        public int getSelectedTextSize() {
+            return selectedTextSize;
+        }
+
+        public float getTextAlpha() {
+            return textAlpha;
+        }
+
+        public float getSelectedTextZoom() {
+            return selectedTextZoom;
+        }
     }
+    
+    public static  class WheelStyleBuilder {
+        
+        private int unselectedTextColor;
+        private int selectedTextColor;
+        private int unselectedTextSize;
+        private int selectedTextSize;
+        private float textAlpha;
+        private float selectedTextZoom;
+        private int backgroundColor; 
+
+        private Context context;
+        
+        public WheelStyleBuilder(Context context) {
+            context = context;
+            selectedTextColor = unselectedTextColor = WheelConstants.WHEEL_TEXT_COLOR;
+            selectedTextSize = unselectedTextSize = WheelConstants.WHEEL_TEXT_SIZE;
+            backgroundColor = WheelConstants.WHEEL_BG;
+            selectedTextZoom = 1;
+            textAlpha = 1;
+        }
+        
+        public WheelStyleBuilder unselectedTextColor(int color){
+            unselectedTextColor = color;
+            return this;
+        }
+
+        
+        public WheelStyleBuilder unselectedTextSize(int size){
+            unselectedTextSize = size;
+            return this;
+        }
+
+
+        public WheelStyleBuilder selectedTextColor(int color){
+            selectedTextColor = color;
+            return this;
+        }
+
+        public WheelStyleBuilder selectedTextSize(int size){
+            unselectedTextColor = size;
+            return this;
+        }
+
+        public WheelStyleBuilder textAlpha(@FloatRange(from=0.0, to=1.0) float alpha){
+            textAlpha = alpha;
+            return this;
+        }
+
+
+        public WheelStyleBuilder selectedTextZoom(float offset){
+            selectedTextZoom = offset;
+            return this;
+        }
+
+        public WheelStyleBuilder backgroundColor(int color){
+            backgroundColor = color;
+            return this;
+        }
+        
+        
+        
+        public WheelViewStyle build(){
+            WheelViewStyle wheelViewStyle = new WheelViewStyle();
+            wheelViewStyle.selectedTextSize = selectedTextSize;
+            wheelViewStyle.textSize = unselectedTextSize;
+            wheelViewStyle.selectedTextColor = selectedTextColor;
+            wheelViewStyle.textColor = unselectedTextColor;
+            wheelViewStyle.textAlpha = textAlpha;
+            wheelViewStyle.selectedTextZoom = selectedTextZoom;
+            return wheelViewStyle;
+        }
+    }
+    
 
 }

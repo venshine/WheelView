@@ -20,6 +20,8 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:support-annotations:23.2.0'
+
 }
 
 //apply from: 'http://git.oschina.net/venshine/gradle-bintray-upload/raw/master/bintray.gradle'

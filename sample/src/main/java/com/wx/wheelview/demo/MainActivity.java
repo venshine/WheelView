@@ -61,16 +61,19 @@ public class MainActivity extends Activity {
         mainWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         mainWheelView.setSkin(WheelView.Skin.Holo);
         mainWheelView.setWheelData(createMainDatas());
-        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
-        style.selectedTextSize = 20;
-        style.textSize = 16;
-        mainWheelView.setStyle(style);
+        WheelView.WheelViewStyle wheelViewStyle = new WheelView.WheelStyleBuilder(this)
+                .selectedTextSize(20)
+                .unselectedTextSize(16)
+                .selectedTextColor(Color.parseColor("#0288ce"))
+                .unselectedTextColor(Color.GRAY)
+                .build();
+        mainWheelView.setStyle(wheelViewStyle);
 
         subWheelView = (WheelView) findViewById(R.id.sub_wheelview);
         subWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         subWheelView.setSkin(WheelView.Skin.Holo);
         subWheelView.setWheelData(createSubDatas().get(createMainDatas().get(mainWheelView.getSelection())));
-        subWheelView.setStyle(style);
+        subWheelView.setStyle(wheelViewStyle);
         mainWheelView.join(subWheelView);
         mainWheelView.joinDatas(createSubDatas());
 
@@ -79,7 +82,7 @@ public class MainActivity extends Activity {
         childWheelView.setSkin(WheelView.Skin.Holo);
         childWheelView.setWheelData(createChildDatas().get(createSubDatas().get(createMainDatas().get(mainWheelView
                 .getSelection())).get(subWheelView.getSelection())));
-        childWheelView.setStyle(style);
+        childWheelView.setStyle(wheelViewStyle);
         subWheelView.join(childWheelView);
         subWheelView.joinDatas(createChildDatas());
     }
@@ -92,25 +95,33 @@ public class MainActivity extends Activity {
         hourWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         hourWheelView.setSkin(WheelView.Skin.Holo);
         hourWheelView.setWheelData(createHours());
-        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
-        style.selectedTextColor = Color.parseColor("#0288ce");
-        style.textColor = Color.GRAY;
-        style.selectedTextSize = 20;
-        hourWheelView.setStyle(style);
+        hourWheelView.setStyle(new WheelView.WheelStyleBuilder(this)
+                .selectedTextSize(20)
+                .selectedTextColor(Color.parseColor("#0288ce"))
+                .unselectedTextColor(Color.GRAY)
+                .build());
         hourWheelView.setExtraText("时", Color.parseColor("#0288ce"), 40, 70);
 
         minuteWheelView = (WheelView) findViewById(R.id.minute_wheelview);
         minuteWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         minuteWheelView.setSkin(WheelView.Skin.Holo);
         minuteWheelView.setWheelData(createMinutes());
-        minuteWheelView.setStyle(style);
+        minuteWheelView.setStyle(new WheelView.WheelStyleBuilder(this)
+                .selectedTextSize(20)
+                .selectedTextColor(Color.parseColor("#0288ce"))
+                .unselectedTextColor(Color.GRAY)
+                .build());
         minuteWheelView.setExtraText("分", Color.parseColor("#0288ce"), 40, 70);
 
         secondWheelView = (WheelView) findViewById(R.id.second_wheelview);
         secondWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         secondWheelView.setSkin(WheelView.Skin.Holo);
         secondWheelView.setWheelData(createMinutes());
-        secondWheelView.setStyle(style);
+        secondWheelView.setStyle(new WheelView.WheelStyleBuilder(this)
+                .selectedTextSize(20)
+                .selectedTextColor(Color.parseColor("#0288ce"))
+                .unselectedTextColor(Color.GRAY)
+                .build());
         secondWheelView.setExtraText("秒", Color.parseColor("#0288ce"), 40, 70);
     }
 
@@ -118,11 +129,19 @@ public class MainActivity extends Activity {
      * common皮肤、图文混排无皮肤、自定义布局
      */
     private void initWheel3() {
+        
+        WheelView.WheelViewStyle wheelViewStyle = new WheelView.WheelStyleBuilder(this)
+                .selectedTextColor(Color.GREEN)
+                .unselectedTextColor(Color.DKGRAY)
+                .backgroundColor(Color.YELLOW)
+                .build();
+        
         commonWheelView = (WheelView) findViewById(R.id.common_wheelview);
         commonWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         commonWheelView.setSkin(WheelView.Skin.Common);
         commonWheelView.setWheelData(createArrays());
-
+        commonWheelView.setStyle(wheelViewStyle);
+        
         simpleWheelView = (WheelView) findViewById(R.id.simple_wheelview);
         simpleWheelView.setWheelAdapter(new SimpleWheelAdapter(this));
         simpleWheelView.setWheelSize(5);
@@ -130,6 +149,7 @@ public class MainActivity extends Activity {
         simpleWheelView.setSkin(WheelView.Skin.None);
         simpleWheelView.setLoop(true);
         simpleWheelView.setWheelClickable(true);
+        simpleWheelView.setStyle(wheelViewStyle);
         simpleWheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener() {
             @Override
             public void onItemClick(int position, Object o) {
@@ -149,15 +169,12 @@ public class MainActivity extends Activity {
         myWheelView.setSkin(WheelView.Skin.Holo);
         myWheelView.setWheelData(createArrays());
         myWheelView.setSelection(2);
-        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
-        style.backgroundColor = Color.YELLOW;
-        style.textColor = Color.DKGRAY;
-        style.selectedTextColor = Color.GREEN;
-        myWheelView.setStyle(style);
+    
+        myWheelView.setStyle(wheelViewStyle);
     }
 
     public void showDialog(View view) {
-        WheelViewDialog dialog = new WheelViewDialog(this);
+        WheelViewDialog dialog = new WheelViewDialog(this,new WheelView.WheelStyleBuilder(this).build());
         dialog.setTitle("wheelview dialog").setItems(createArrays()).setButtonText("确定").setDialogStyle(Color
                 .parseColor("#6699ff")).setCount(5).show();
     }
