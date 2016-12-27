@@ -678,6 +678,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
         public int backgroundColor = -1; // 背景颜色
         public int holoBorderColor = -1;   // holo样式边框颜色
+        public int holoBorderWidth = -1;//holo样式边框宽度
         public int textColor = -1; // 文本颜色
         public int selectedTextColor = -1; // 选中文本颜色
         public int textSize = -1;// 文本大小
@@ -691,6 +692,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         public WheelViewStyle(WheelViewStyle style) {
             this.backgroundColor = style.backgroundColor;
             this.holoBorderColor = style.holoBorderColor;
+            this.holoBorderWidth = style.holoBorderWidth;
             this.textColor = style.textColor;
             this.selectedTextColor = style.selectedTextColor;
             this.textSize = style.textSize;
