@@ -66,10 +66,14 @@ public class WheelUtils {
             return (TextView) view;
         } else {
             if (view instanceof ViewGroup) {
-                return findTextView(((ViewGroup) view).getChildAt(0));
-            } else {
-                return null;
+                for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
+                    TextView textView = findTextView(((ViewGroup) view).getChildAt(i));
+                    if (textView != null) {
+                        return textView;
+                    }
+                }
             }
+            return null;
         }
     }
 
