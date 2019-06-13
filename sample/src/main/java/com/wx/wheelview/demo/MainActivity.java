@@ -96,22 +96,23 @@ public class MainActivity extends Activity {
         style.selectedTextColor = Color.parseColor("#0288ce");
         style.textColor = Color.GRAY;
         style.selectedTextSize = 20;
+        style.selectedTextBold = true;
         hourWheelView.setStyle(style);
-        hourWheelView.setExtraText("时", Color.parseColor("#0288ce"), 40, 70);
+        hourWheelView.setExtraText("时", Color.parseColor("#0288ce"), 40, 70, true);
 
         minuteWheelView = (WheelView) findViewById(R.id.minute_wheelview);
         minuteWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         minuteWheelView.setSkin(WheelView.Skin.Holo);
         minuteWheelView.setWheelData(createMinutes());
         minuteWheelView.setStyle(style);
-        minuteWheelView.setExtraText("分", Color.parseColor("#0288ce"), 40, 70);
+        minuteWheelView.setExtraText("分", Color.parseColor("#0288ce"), 40, 70, true);
 
         secondWheelView = (WheelView) findViewById(R.id.second_wheelview);
         secondWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         secondWheelView.setSkin(WheelView.Skin.Holo);
         secondWheelView.setWheelData(createMinutes());
         secondWheelView.setStyle(style);
-        secondWheelView.setExtraText("秒", Color.parseColor("#0288ce"), 40, 70);
+        secondWheelView.setExtraText("秒", Color.parseColor("#0288ce"), 40, 70, true);
     }
 
     /**
