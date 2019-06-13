@@ -355,7 +355,9 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             @Override
             public void run() {
                 setWheelData(list);
-                WheelView.super.setSelection(mSelection);
+                if (getCurrentPosition() >= list.size()) {
+                    WheelView.super.setSelection(list.size() - 1);
+                }
                 refreshCurrentPosition(true);
             }
         }, 10);
