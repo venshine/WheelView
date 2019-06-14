@@ -64,6 +64,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private int mExtraTextColor;    // 附加文本颜色
     private int mExtraTextSize; // 附加文本大小
     private int mExtraMargin;   // 附加文本外边距
+    private boolean mExtraTextBold; // 附加文本是否加粗
     private int mSelection = 0; // 选中位置
     private boolean mClickable = CLICKABLE; // 是否可点击
 
@@ -355,7 +356,9 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             @Override
             public void run() {
                 setWheelData(list);
-                WheelView.super.setSelection(mSelection);
+                if (getCurrentPosition() >= list.size()) {
+                    WheelView.super.setSelection(list.size() - 1);
+                }
                 refreshCurrentPosition(true);
             }
         }, 10);
@@ -498,17 +501,32 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     /**
      * 设置选中行附加文本
      *
-     * @param text
-     * @param textColor
-     * @param textSize
-     * @param margin
+     * @param text      附加文本
+     * @param textColor 文本颜色
+     * @param textSize  文本大小
+     * @param margin    距中心水平方向的距离
      */
     public void setExtraText(String text, int textColor, int textSize, int
             margin) {
+        setExtraText(text, textColor, textSize, margin, false);
+    }
+
+    /**
+     * 设置选中行附加文本
+     *
+     * @param text      附加文本
+     * @param textColor 文本颜色
+     * @param textSize  文本大小
+     * @param margin    距中心水平方向的距离
+     * @param textBold  文本是否加粗
+     */
+    public void setExtraText(String text, int textColor, int textSize, int
+            margin, boolean textBold) {
         mExtraText = text;
         mExtraTextColor = textColor;
         mExtraTextSize = textSize;
         mExtraMargin = margin;
+        mExtraTextBold = textBold;
     }
 
     /**
@@ -617,7 +635,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             float textSize = mStyle.selectedTextSize != -1 ? mStyle
                     .selectedTextSize : (mStyle.selectedTextZoom != -1 ? (defTextSize * mStyle.selectedTextZoom) :
                     defTextSize);
-            setTextView(itemView, textView, textColor, textSize, 1.0f);
+            boolean textBold = mStyle.selectedTextBold;
+            setTextView(itemView, textView, textColor, textSize, 1.0f, textBold);
         } else {    // 未选中
             int textColor = mStyle.textColor != -1 ? mStyle.textColor :
                     WheelConstants.WHEEL_TEXT_COLOR;
@@ -626,7 +645,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             int delta = Math.abs(position - curPosition);
             float alpha = (float) Math.pow(mStyle.textAlpha != -1 ? mStyle.textAlpha : WheelConstants
                     .WHEEL_TEXT_ALPHA, delta);
-            setTextView(itemView, textView, textColor, textSize, alpha);
+            setTextView(itemView, textView, textColor, textSize, alpha, false);
         }
     }
 
@@ -639,10 +658,15 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param textSize
      * @param textAlpha
      */
-    private void setTextView(View itemView, TextView textView, int textColor, float textSize, float textAlpha) {
+    private void setTextView(View itemView, TextView textView, int textColor, float textSize, float textAlpha, boolean textBold) {
         textView.setTextColor(textColor);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
         itemView.setAlpha(textAlpha);
+        try {
+            textView.getPaint().setFakeBoldText(textBold);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -657,6 +681,11 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             int baseline = (targetRect.bottom + targetRect.top - fontMetrics
                     .bottom - fontMetrics.top) / 2;
             mTextPaint.setTextAlign(Paint.Align.CENTER);
+            try {
+                mTextPaint.setFakeBoldText(mExtraTextBold);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             canvas.drawText(mExtraText, targetRect.centerX() + mExtraMargin,
                     baseline, mTextPaint);
         }
@@ -685,6 +714,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         public int selectedTextSize = -1;   // 选中文本大小
         public float textAlpha = -1;  // 文本透明度(0f ~ 1f)
         public float selectedTextZoom = -1; // 选中文本放大倍数
+        public boolean selectedTextBold; // 选中文本是否加粗
 
         public WheelViewStyle() {
         }
@@ -699,6 +729,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             this.selectedTextSize = style.selectedTextSize;
             this.textAlpha = style.textAlpha;
             this.selectedTextZoom = style.selectedTextZoom;
+            this.selectedTextBold = style.selectedTextBold;
         }
 
     }
