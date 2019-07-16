@@ -344,6 +344,32 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     }
 
     /**
+     * 设置是否支持点击滚轮进行选择
+     *
+     * @param clickToPosition 是否支持点击滚轮进行选择
+     */
+    public void setClickToPosition(boolean clickToPosition) {
+        if (clickToPosition) {
+            mWheelAdapter.setOnClickListener(new BaseWheelAdapter.OnClickListener() {
+                @Override
+                public void onPositionClick(int position) {
+                    int deltaPosition = position - getCurrentPosition();
+                    if (mLoop) {
+                        if (deltaPosition > mWheelSize / 2) {
+                            deltaPosition -= getWheelCount();
+                        } else if (deltaPosition < -mWheelSize / 2) {
+                            deltaPosition += getWheelCount();
+                        }
+                    }
+                    smoothScrollBy(mItemH * deltaPosition, 400);
+                }
+            });
+        } else {
+            mWheelAdapter.setOnClickListener(null);
+        }
+    }
+
+    /**
      * 重置数据
      *
      * @param list
