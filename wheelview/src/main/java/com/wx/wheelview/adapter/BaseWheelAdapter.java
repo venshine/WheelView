@@ -41,6 +41,8 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
 
     private int mCurrentPositon = -1;
 
+    private OnClickListener mOnClickListener;
+
     protected abstract View bindView(int position, View convertView, ViewGroup parent);
 
     /**
@@ -50,6 +52,10 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
      */
     public final void setCurrentPosition(int position) {
         mCurrentPositon = position;
+    }
+
+    public void setOnClickListener(OnClickListener onClickListener) {
+        mOnClickListener = onClickListener;
     }
 
     @Override
@@ -117,6 +123,15 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
                 view.setVisibility(View.VISIBLE);
             }
         }
+        if (mOnClickListener != null) {
+            final int finalPosition = position;
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mOnClickListener.onPositionClick(finalPosition);
+                }
+            });
+        }
         return view;
     }
 
@@ -164,5 +179,9 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
     @Deprecated
     public final void notifyDataSetInvalidated() {
         super.notifyDataSetInvalidated();
+    }
+
+    public interface OnClickListener {
+        void onPositionClick(int position);
     }
 }

@@ -150,6 +150,7 @@ public class MainActivity extends Activity {
         myWheelView.setSkin(WheelView.Skin.Holo);
         myWheelView.setWheelData(createArrays());
         myWheelView.setSelection(2);
+        myWheelView.setClickToPosition(true);
         WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
         style.backgroundColor = Color.YELLOW;
         style.textColor = Color.DKGRAY;
