@@ -18,6 +18,7 @@ package com.wx.wheelview.graphics;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
 import com.wx.wheelview.common.WheelConstants;
@@ -30,15 +31,15 @@ import com.wx.wheelview.widget.WheelView;
  */
 public class WheelDrawable extends Drawable {
 
-    protected int mWidth;   // 控件宽
+    int mWidth;   // 控件宽
 
-    protected int mHeight;  // 控件高
+    int mHeight;  // 控件高
 
-    protected WheelView.WheelViewStyle mStyle;
+    WheelView.WheelViewStyle mStyle;
 
     private Paint mBgPaint;
 
-    public WheelDrawable(int width, int height, WheelView.WheelViewStyle style) {
+    WheelDrawable(int width, int height, WheelView.WheelViewStyle style) {
         mWidth = width;
         mHeight = height;
         mStyle = style;
@@ -47,7 +48,8 @@ public class WheelDrawable extends Drawable {
 
     private void init() {
         mBgPaint = new Paint();
-        mBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants.WHEEL_BG);
+        mBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor :
+                WheelConstants.WHEEL_BG);
     }
 
     @Override
@@ -65,6 +67,6 @@ public class WheelDrawable extends Drawable {
 
     @Override
     public int getOpacity() {
-        return 0;
+        return PixelFormat.UNKNOWN;
     }
 }

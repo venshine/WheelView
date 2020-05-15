@@ -24,7 +24,8 @@ import com.wx.wheelview.widget.WheelView;
  */
 public class DrawableFactory {
 
-    public static Drawable createDrawable(WheelView.Skin skin, int width, int height, WheelView.WheelViewStyle
+    public static Drawable createDrawable(WheelView.Skin skin, int width, int height,
+                                          WheelView.WheelViewStyle
             style, int wheelSize, int itemH) {
         if (skin.equals(WheelView.Skin.Common)) {
             return new CommonDrawable(width, height, style, wheelSize, itemH);

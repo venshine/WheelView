@@ -41,7 +41,6 @@ build-log.xml
 ### Gradle ###
 build/
 .gradle
-gradle.properties
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -51,3 +50,15 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+/build
+/captures
+.externalNativeBuild
+.cxx

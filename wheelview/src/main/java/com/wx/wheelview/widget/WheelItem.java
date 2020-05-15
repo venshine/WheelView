@@ -59,11 +59,13 @@ public class WheelItem extends FrameLayout {
      */
     private void init() {
         LinearLayout layout = new LinearLayout(getContext());
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, WheelUtils.dip2px(getContext(),
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+                WheelUtils.dip2px(getContext(),
                 WheelConstants
                         .WHEEL_ITEM_HEIGHT));
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setPadding(WheelConstants.WHEEL_ITEM_PADDING, WheelConstants.WHEEL_ITEM_PADDING, WheelConstants
+        layout.setPadding(WheelConstants.WHEEL_ITEM_PADDING, WheelConstants.WHEEL_ITEM_PADDING,
+                WheelConstants
                 .WHEEL_ITEM_PADDING, WheelConstants.WHEEL_ITEM_PADDING);
         layout.setGravity(Gravity.CENTER);
         addView(layout, layoutParams);
@@ -72,7 +74,8 @@ public class WheelItem extends FrameLayout {
         mImage = new ImageView(getContext());
         mImage.setTag(WheelConstants.WHEEL_ITEM_IMAGE_TAG);
         mImage.setVisibility(View.GONE);
-        LayoutParams imageParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        LayoutParams imageParams = new LayoutParams(LayoutParams.WRAP_CONTENT,
+                LayoutParams.WRAP_CONTENT);
         imageParams.rightMargin = WheelConstants.WHEEL_ITEM_MARGIN;
         layout.addView(mImage, imageParams);
 
@@ -84,7 +87,8 @@ public class WheelItem extends FrameLayout {
         mText.setIncludeFontPadding(false);
         mText.setGravity(Gravity.CENTER);
         mText.setTextColor(Color.BLACK);
-        LayoutParams textParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+        LayoutParams textParams = new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
         layout.addView(mText, textParams);
     }
 

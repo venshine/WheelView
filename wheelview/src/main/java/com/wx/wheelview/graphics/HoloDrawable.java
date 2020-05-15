@@ -32,7 +32,7 @@ public class HoloDrawable extends WheelDrawable {
 
     private int mWheelSize, mItemH;
 
-    public HoloDrawable(int width, int height, WheelView.WheelViewStyle style, int wheelSize, int itemH) {
+    HoloDrawable(int width, int height, WheelView.WheelViewStyle style, int wheelSize, int itemH) {
         super(width, height, style);
         mWheelSize = wheelSize;
         mItemH = itemH;
@@ -58,10 +58,11 @@ public class HoloDrawable extends WheelDrawable {
 
         // draw select border
         if (mItemH != 0) {
-            canvas.drawLine(0, mItemH * (mWheelSize / 2), mWidth, mItemH
-                    * (mWheelSize / 2), mHoloPaint);
-            canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), mWidth, mItemH
-                    * (mWheelSize / 2 + 1), mHoloPaint);
+            int size = mWheelSize >> 1;
+            canvas.drawLine(0, mItemH * size, mWidth, mItemH
+                    * size, mHoloPaint);
+            canvas.drawLine(0, mItemH * (size + 1), mWidth, mItemH
+                    * (size + 1), mHoloPaint);
         }
     }
 }

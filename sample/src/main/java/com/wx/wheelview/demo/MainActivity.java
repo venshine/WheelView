@@ -39,10 +39,6 @@ import java.util.List;
  */
 public class MainActivity extends Activity {
 
-    private WheelView mainWheelView, subWheelView, childWheelView, hourWheelView, minuteWheelView, secondWheelView,
-            commonWheelView,
-            simpleWheelView, myWheelView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +53,7 @@ public class MainActivity extends Activity {
      * 联动WheelView
      */
     private void initWheel1() {
-        mainWheelView = (WheelView) findViewById(R.id.main_wheelview);
+        WheelView mainWheelView = findViewById(R.id.main_wheelview);
         mainWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         mainWheelView.setSkin(WheelView.Skin.Holo);
         mainWheelView.setWheelData(createMainDatas());
@@ -66,7 +62,7 @@ public class MainActivity extends Activity {
         style.textSize = 16;
         mainWheelView.setStyle(style);
 
-        subWheelView = (WheelView) findViewById(R.id.sub_wheelview);
+        WheelView subWheelView = findViewById(R.id.sub_wheelview);
         subWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         subWheelView.setSkin(WheelView.Skin.Holo);
         subWheelView.setWheelData(createSubDatas().get(createMainDatas().get(mainWheelView.getSelection())));
@@ -74,7 +70,7 @@ public class MainActivity extends Activity {
         mainWheelView.join(subWheelView);
         mainWheelView.joinDatas(createSubDatas());
 
-        childWheelView = (WheelView) findViewById(R.id.child_wheelview);
+        WheelView childWheelView = findViewById(R.id.child_wheelview);
         childWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         childWheelView.setSkin(WheelView.Skin.Holo);
         childWheelView.setWheelData(createChildDatas().get(createSubDatas().get(createMainDatas().get(mainWheelView
@@ -88,7 +84,7 @@ public class MainActivity extends Activity {
      * holo皮肤
      */
     private void initWheel2() {
-        hourWheelView = (WheelView) findViewById(R.id.hour_wheelview);
+        WheelView hourWheelView = findViewById(R.id.hour_wheelview);
         hourWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         hourWheelView.setSkin(WheelView.Skin.Holo);
         hourWheelView.setWheelData(createHours());
@@ -100,14 +96,14 @@ public class MainActivity extends Activity {
         hourWheelView.setStyle(style);
         hourWheelView.setExtraText("时", Color.parseColor("#0288ce"), 40, 70, true);
 
-        minuteWheelView = (WheelView) findViewById(R.id.minute_wheelview);
+        WheelView minuteWheelView = findViewById(R.id.minute_wheelview);
         minuteWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         minuteWheelView.setSkin(WheelView.Skin.Holo);
         minuteWheelView.setWheelData(createMinutes());
         minuteWheelView.setStyle(style);
         minuteWheelView.setExtraText("分", Color.parseColor("#0288ce"), 40, 70, true);
 
-        secondWheelView = (WheelView) findViewById(R.id.second_wheelview);
+        WheelView secondWheelView = findViewById(R.id.second_wheelview);
         secondWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         secondWheelView.setSkin(WheelView.Skin.Holo);
         secondWheelView.setWheelData(createMinutes());
@@ -119,32 +115,22 @@ public class MainActivity extends Activity {
      * common皮肤、图文混排无皮肤、自定义布局
      */
     private void initWheel3() {
-        commonWheelView = (WheelView) findViewById(R.id.common_wheelview);
+        WheelView commonWheelView = findViewById(R.id.common_wheelview);
         commonWheelView.setWheelAdapter(new ArrayWheelAdapter(this));
         commonWheelView.setSkin(WheelView.Skin.Common);
         commonWheelView.setWheelData(createArrays());
 
-        simpleWheelView = (WheelView) findViewById(R.id.simple_wheelview);
+        WheelView simpleWheelView = findViewById(R.id.simple_wheelview);
         simpleWheelView.setWheelAdapter(new SimpleWheelAdapter(this));
         simpleWheelView.setWheelSize(5);
         simpleWheelView.setWheelData(createDatas());
         simpleWheelView.setSkin(WheelView.Skin.None);
         simpleWheelView.setLoop(true);
         simpleWheelView.setWheelClickable(true);
-        simpleWheelView.setOnWheelItemClickListener(new WheelView.OnWheelItemClickListener() {
-            @Override
-            public void onItemClick(int position, Object o) {
-                WheelUtils.log("click:" + position);
-            }
-        });
-        simpleWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<WheelData>() {
-            @Override
-            public void onItemSelected(int position, WheelData data) {
-                WheelUtils.log("selected:" + position);
-            }
-        });
+        simpleWheelView.setOnWheelItemClickListener((position, o) -> WheelUtils.log("click:" + position));
+        simpleWheelView.setOnWheelItemSelectedListener((WheelView.OnWheelItemSelectedListener<WheelData>) (position, data) -> WheelUtils.log("selected:" + position));
 
-        myWheelView = (WheelView) findViewById(R.id.my_wheelview);
+        WheelView myWheelView = findViewById(R.id.my_wheelview);
         myWheelView.setWheelAdapter(new MyWheelAdapter(this));
         myWheelView.setWheelSize(5);
         myWheelView.setSkin(WheelView.Skin.Holo);
@@ -165,17 +151,41 @@ public class MainActivity extends Activity {
     }
 
     private List<String> createMainDatas() {
-        String[] strings = {"黑龙江", "吉林", "辽宁"};
+        String[] strings = {
+                "黑龙江",
+                "吉林",
+                "辽宁"
+        };
         return Arrays.asList(strings);
     }
 
     private HashMap<String, List<String>> createSubDatas() {
         HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-        String[] strings = {"黑龙江", "吉林", "辽宁"};
-        String[] s1 = {"哈尔滨", "齐齐哈尔", "大庆"};
-        String[] s2 = {"长春", "吉林"};
-        String[] s3 = {"沈阳", "大连", "鞍山", "抚顺"};
-        String[][] ss = {s1, s2, s3};
+        String[] strings = {
+                "黑龙江",
+                "吉林",
+                "辽宁"
+        };
+        String[] s1 = {
+                "哈尔滨",
+                "齐齐哈尔",
+                "大庆"
+        };
+        String[] s2 = {
+                "长春",
+                "吉林"
+        };
+        String[] s3 = {
+                "沈阳",
+                "大连",
+                "鞍山",
+                "抚顺"
+        };
+        String[][] ss = {
+                s1,
+                s2,
+                s3
+        };
         for (int i = 0; i < strings.length; i++) {
             map.put(strings[i], Arrays.asList(ss[i]));
         }
@@ -184,17 +194,67 @@ public class MainActivity extends Activity {
 
     private HashMap<String, List<String>> createChildDatas() {
         HashMap<String, List<String>> map = new HashMap<String, List<String>>();
-        String[] strings = {"哈尔滨", "齐齐哈尔", "大庆", "长春", "吉林", "沈阳", "大连", "鞍山", "抚顺"};
-        String[] s1 = {"道里区", "道外区", "南岗区", "香坊区"};
-        String[] s2 = {"龙沙区", "建华区", "铁锋区"};
-        String[] s3 = {"红岗区", "大同区"};
-        String[] s11 = {"南关区", "朝阳区"};
+        String[] strings = {
+                "哈尔滨",
+                "齐齐哈尔",
+                "大庆",
+                "长春",
+                "吉林",
+                "沈阳",
+                "大连",
+                "鞍山",
+                "抚顺"
+        };
+        String[] s1 = {
+                "道里区",
+                "道外区",
+                "南岗区",
+                "香坊区"
+        };
+        String[] s2 = {
+                "龙沙区",
+                "建华区",
+                "铁锋区"
+        };
+        String[] s3 = {
+                "红岗区",
+                "大同区"
+        };
+        String[] s11 = {
+                "南关区",
+                "朝阳区"
+        };
         String[] s12 = {"龙潭区"};
-        String[] s21 = {"和平区", "皇姑区", "大东区", "铁西区"};
-        String[] s22 = {"中山区", "金州区"};
-        String[] s23 = {"铁东区", "铁西区"};
-        String[] s24 = {"新抚区", "望花区", "顺城区"};
-        String[][] ss = {s1, s2, s3, s11, s12, s21, s22, s23, s24};
+        String[] s21 = {
+                "和平区",
+                "皇姑区",
+                "大东区",
+                "铁西区"
+        };
+        String[] s22 = {
+                "中山区",
+                "金州区"
+        };
+        String[] s23 = {
+                "铁东区",
+                "铁西区"
+        };
+        String[] s24 = {
+                "新抚区",
+                "望花区",
+                "顺城区"
+        };
+        String[][] ss = {
+                s1,
+                s2,
+                s3,
+                s11,
+                s12,
+                s21,
+                s22,
+                s23,
+                s24
+        };
         for (int i = 0; i < strings.length; i++) {
             map.put(strings[i], Arrays.asList(ss[i]));
         }
@@ -203,7 +263,7 @@ public class MainActivity extends Activity {
 
 
     private ArrayList<String> createHours() {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < 24; i++) {
             if (i < 10) {
                 list.add("0" + i);
@@ -215,7 +275,7 @@ public class MainActivity extends Activity {
     }
 
     private ArrayList<String> createMinutes() {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < 60; i++) {
             if (i < 10) {
                 list.add("0" + i);
@@ -227,7 +287,7 @@ public class MainActivity extends Activity {
     }
 
     private ArrayList<String> createArrays() {
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
             list.add("item" + i);
         }
@@ -235,7 +295,7 @@ public class MainActivity extends Activity {
     }
 
     private ArrayList<WheelData> createDatas() {
-        ArrayList<WheelData> list = new ArrayList<WheelData>();
+        ArrayList<WheelData> list = new ArrayList<>();
         WheelData item;
         for (int i = 0; i < 20; i++) {
             item = new WheelData();

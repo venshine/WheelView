@@ -36,17 +36,20 @@ public class CommonDrawable extends WheelDrawable {
                     0x00AAAAAA
             };  // 阴影色值
 
-    private GradientDrawable mTopShadow = new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
+    private GradientDrawable mTopShadow =
+            new GradientDrawable(GradientDrawable.Orientation.TOP_BOTTOM,
             SHADOWS_COLORS);    // 顶部阴影
 
-    private GradientDrawable mBottomShadow = new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
+    private GradientDrawable mBottomShadow =
+            new GradientDrawable(GradientDrawable.Orientation.BOTTOM_TOP,
             SHADOWS_COLORS);    // 底部阴影
 
     private Paint mCommonBgPaint, mCommonPaint, mCommonDividerPaint, mCommonBorderPaint;
 
     private int mWheelSize, mItemH;
 
-    public CommonDrawable(int width, int height, WheelView.WheelViewStyle style, int wheelSize, int itemH) {
+    CommonDrawable(int width, int height, WheelView.WheelViewStyle style, int wheelSize,
+                   int itemH) {
         super(width, height, style);
         mWheelSize = wheelSize;
         mItemH = itemH;
@@ -55,7 +58,8 @@ public class CommonDrawable extends WheelDrawable {
 
     private void init() {
         mCommonBgPaint = new Paint();
-        mCommonBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
+        mCommonBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor :
+                WheelConstants
                 .WHEEL_SKIN_COMMON_BG);
 
         mCommonPaint = new Paint();
@@ -78,12 +82,13 @@ public class CommonDrawable extends WheelDrawable {
 
         // draw select border
         if (mItemH != 0) {
-            canvas.drawRect(0, mItemH * (mWheelSize / 2), mWidth, mItemH
-                    * (mWheelSize / 2 + 1), mCommonPaint);
-            canvas.drawLine(0, mItemH * (mWheelSize / 2), mWidth, mItemH
-                    * (mWheelSize / 2), mCommonDividerPaint);
-            canvas.drawLine(0, mItemH * (mWheelSize / 2 + 1), mWidth, mItemH
-                    * (mWheelSize / 2 + 1), mCommonDividerPaint);
+            int size = mWheelSize >> 1;
+            canvas.drawRect(0, mItemH * size, mWidth, mItemH
+                    * (size + 1), mCommonPaint);
+            canvas.drawLine(0, mItemH * size, mWidth, mItemH
+                    * size, mCommonDividerPaint);
+            canvas.drawLine(0, mItemH * (size + 1), mWidth, mItemH
+                    * (size + 1), mCommonDividerPaint);
 
             // top, bottom
             mTopShadow.setBounds(0, 0, mWidth, mItemH);

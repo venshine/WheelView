@@ -33,11 +33,11 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
 
     protected List<T> mList = null;
 
-    protected boolean mLoop = IWheelView.LOOP;
+    private boolean mLoop = IWheelView.LOOP;
 
-    protected int mWheelSize = IWheelView.WHEEL_SIZE;
+    private int mWheelSize = IWheelView.WHEEL_SIZE;
 
-    protected boolean mClickable = IWheelView.CLICKABLE;
+    private boolean mClickable = IWheelView.CLICKABLE;
 
     private int mCurrentPositon = -1;
 
@@ -78,7 +78,7 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
 
     @Override
     public boolean areAllItemsEnabled() {
-        return mClickable ? false : true;
+        return !mClickable;
     }
 
     @Override
@@ -125,12 +125,7 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
         }
         if (mOnClickListener != null) {
             final int finalPosition = position;
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    mOnClickListener.onPositionClick(finalPosition);
-                }
-            });
+            view.setOnClickListener(v -> mOnClickListener.onPositionClick(finalPosition));
         }
         return view;
     }

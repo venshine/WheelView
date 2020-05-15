@@ -32,7 +32,7 @@ public class MyWheelAdapter extends BaseWheelAdapter<String> {
 
     private Context mContext;
 
-    public MyWheelAdapter(Context context) {
+    MyWheelAdapter(Context context) {
         mContext = context;
     }
 
@@ -42,7 +42,7 @@ public class MyWheelAdapter extends BaseWheelAdapter<String> {
         if (convertView == null) {
             viewHolder = new ViewHolder();
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_list, null);
-            viewHolder.textView = (TextView) convertView.findViewById(R.id.item_name);
+            viewHolder.textView = convertView.findViewById(R.id.item_name);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (ViewHolder) convertView.getTag();

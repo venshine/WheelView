@@ -41,10 +41,12 @@ public class ArrayWheelAdapter<T> extends BaseWheelAdapter<T> {
         }
         WheelItem wheelItem = (WheelItem) convertView;
         T item = getItem(position);
-        if (wheelItem instanceof CharSequence) {
-            wheelItem.setText((CharSequence) item);
-        } else {
-            wheelItem.setText(item.toString());
+        if (item != null) {
+            if (wheelItem instanceof CharSequence) {
+                wheelItem.setText((CharSequence) item);
+            } else {
+                wheelItem.setText(item.toString());
+            }
         }
         return convertView;
     }

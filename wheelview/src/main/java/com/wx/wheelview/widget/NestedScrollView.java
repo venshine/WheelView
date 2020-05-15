@@ -17,8 +17,6 @@ package com.wx.wheelview.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.MotionEvent;
-import android.view.View;
 import android.widget.ScrollView;
 
 import com.wx.wheelview.common.WheelConstants;
@@ -46,15 +44,12 @@ public class NestedScrollView extends ScrollView {
     }
 
     private void init() {
-        setOnTouchListener(new OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                WheelView wv = (WheelView) findViewWithTag(WheelConstants.TAG);
-                if (wv != null) {
-                    wv.getParent().requestDisallowInterceptTouchEvent(false);
-                }
-                return false;
+        setOnTouchListener((v, event) -> {
+            WheelView wv = findViewWithTag(WheelConstants.TAG);
+            if (wv != null) {
+                wv.getParent().requestDisallowInterceptTouchEvent(false);
             }
+            return false;
         });
     }
 

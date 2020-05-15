@@ -15,6 +15,7 @@
  */
 package com.wx.wheelview.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,7 +28,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -84,6 +84,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     private OnWheelItemClickListener<T> mOnWheelItemClickListener;
 
+    @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -114,12 +115,9 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         }
     };
 
-    private OnTouchListener mTouchListener = new OnTouchListener() {
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        }
+    private OnTouchListener mTouchListener = (v, event) -> {
+        v.getParent().requestDisallowInterceptTouchEvent(true);
+        return false;
     };
 
     private OnScrollListener mOnScrollListener = new OnScrollListener() {
@@ -132,7 +130,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                     if (deltaY == 0 || mItemH == 0) {
                         return;
                     }
-                    if (Math.abs(deltaY) < mItemH / 2) {
+                    if (Math.abs(deltaY) < mItemH >> 1) {
                         int d = getSmoothDistance(deltaY);
                         smoothScrollBy(d, WheelConstants
                                 .WHEEL_SMOOTH_SCROLL_DURATION);
@@ -473,7 +471,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      */
     public T getSelectionItem() {
         int position = getCurrentPosition();
-        position = position < 0 ? 0 : position;
+        position = Math.max(position, 0);
         if (mList != null && mList.size() > position) {
             return mList.get(position);
         }
@@ -488,7 +486,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     @Override
     @Deprecated
     public void setAdapter(ListAdapter adapter) {
-        if (adapter != null && adapter instanceof BaseWheelAdapter) {
+        if (adapter instanceof BaseWheelAdapter) {
             setWheelAdapter((BaseWheelAdapter) adapter);
         } else {
             throw new WheelViewException("please invoke setWheelAdapter " +
@@ -594,7 +592,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             return;
         }
         int position = 0;
-        if (Math.abs(getChildAt(0).getY()) <= mItemH / 2) {
+        if (Math.abs(getChildAt(0).getY()) <= mItemH >> 1) {
             position = firstPosition;
         } else {
             position = firstPosition + 1;
@@ -631,7 +629,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             }
             if (mWheelAdapter instanceof ArrayWheelAdapter || mWheelAdapter
                     instanceof SimpleWheelAdapter) {
-                TextView textView = (TextView) itemView.findViewWithTag
+                TextView textView = itemView.findViewWithTag
                         (WheelConstants.WHEEL_ITEM_TEXT_TAG);
                 refreshTextView(i, curPosition, itemView, textView);
             } else {    // 自定义类型
@@ -657,9 +655,11 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             int textColor = mStyle.selectedTextColor != -1 ? mStyle
                     .selectedTextColor : (mStyle.textColor != -1 ? mStyle
                     .textColor : WheelConstants.WHEEL_TEXT_COLOR);
-            float defTextSize = mStyle.textSize != -1 ? mStyle.textSize : WheelConstants.WHEEL_TEXT_SIZE;
+            float defTextSize = mStyle.textSize != -1 ? mStyle.textSize :
+                    WheelConstants.WHEEL_TEXT_SIZE;
             float textSize = mStyle.selectedTextSize != -1 ? mStyle
-                    .selectedTextSize : (mStyle.selectedTextZoom != -1 ? (defTextSize * mStyle.selectedTextZoom) :
+                    .selectedTextSize : (mStyle.selectedTextZoom != -1 ?
+                    (defTextSize * mStyle.selectedTextZoom) :
                     defTextSize);
             boolean textBold = mStyle.selectedTextBold;
             setTextView(itemView, textView, textColor, textSize, 1.0f, textBold);
@@ -669,8 +669,9 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             float textSize = mStyle.textSize != -1 ? mStyle.textSize :
                     WheelConstants.WHEEL_TEXT_SIZE;
             int delta = Math.abs(position - curPosition);
-            float alpha = (float) Math.pow(mStyle.textAlpha != -1 ? mStyle.textAlpha : WheelConstants
-                    .WHEEL_TEXT_ALPHA, delta);
+            float alpha = (float) Math.pow(mStyle.textAlpha != -1 ? mStyle.textAlpha :
+                    WheelConstants
+                            .WHEEL_TEXT_ALPHA, delta);
             setTextView(itemView, textView, textColor, textSize, alpha, false);
         }
     }
@@ -684,7 +685,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param textSize
      * @param textAlpha
      */
-    private void setTextView(View itemView, TextView textView, int textColor, float textSize, float textAlpha, boolean textBold) {
+    private void setTextView(View itemView, TextView textView, int textColor, float textSize,
+                             float textAlpha, boolean textBold) {
         textView.setTextColor(textColor);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
         itemView.setAlpha(textAlpha);

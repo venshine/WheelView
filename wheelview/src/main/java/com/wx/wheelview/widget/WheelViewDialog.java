@@ -73,13 +73,15 @@ public class WheelViewDialog<T> implements View.OnClickListener {
         mTitle.setTextColor(WheelConstants.DIALOG_WHEEL_COLOR);
         mTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         mTitle.setGravity(Gravity.CENTER);
-        LinearLayout.LayoutParams titleParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams titleParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 WheelUtils.dip2px(mContext, 50));
         layout.addView(mTitle, titleParams);
 
         mLine1 = new View(mContext);
         mLine1.setBackgroundColor(WheelConstants.DIALOG_WHEEL_COLOR);
-        LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams lineParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 WheelUtils.dip2px(mContext, 2));
         layout.addView(mLine1, lineParams);
 
@@ -91,21 +93,20 @@ public class WheelViewDialog<T> implements View.OnClickListener {
         mStyle.selectedTextZoom = 1.2f;
         mWheelView.setStyle(mStyle);
 
-        mWheelView.setOnWheelItemSelectedListener(new WheelView.OnWheelItemSelectedListener<T>() {
-            @Override
-            public void onItemSelected(int position, T text) {
-                mSelectedPos = position;
-                mSelectedText = text;
-            }
+        mWheelView.setOnWheelItemSelectedListener((position, text) -> {
+            mSelectedPos = position;
+            mSelectedText = text;
         });
-        ViewGroup.MarginLayoutParams wheelParams = new ViewGroup.MarginLayoutParams(LinearLayout.LayoutParams
+        ViewGroup.MarginLayoutParams wheelParams =
+                new ViewGroup.MarginLayoutParams(LinearLayout.LayoutParams
                 .MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         layout.addView(mWheelView, wheelParams);
 
         mLine2 = new View(mContext);
         mLine2.setBackgroundColor(WheelConstants.DIALOG_WHEEL_COLOR);
-        LinearLayout.LayoutParams line2Params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams line2Params =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 WheelUtils.dip2px(mContext, 1f));
         layout.addView(mLine2, line2Params);
 
@@ -116,7 +117,8 @@ public class WheelViewDialog<T> implements View.OnClickListener {
         mButton.setClickable(true);
         mButton.setOnClickListener(this);
         mButton.setText("OK");
-        LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams buttonParams =
+                new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
                 WheelUtils.dip2px(mContext, 45));
         layout.addView(mButton, buttonParams);
 
