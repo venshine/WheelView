@@ -125,6 +125,26 @@ public class WheelViewTest {
         assertEquals("g", centerText(wheel).getText().toString());
     }
 
+    // 控件自身先 GONE 再 VISIBLE，高度和选中应正常（issue #55）
+    @Test
+    public void wheelWorksAfterItselfBecomesVisible() {
+        WheelView<String> wheel = createWheel();
+        wheel.setVisibility(View.GONE);
+        activity.setContentView(wheel, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        layout();
+
+        wheel.setVisibility(View.VISIBLE);
+        layout();
+        wheel.setSelection(5);
+        layout();
+
+        int itemHeight = wheel.getChildAt(0).getHeight();
+        assertTrue(itemHeight > 0);
+        assertEquals(itemHeight * WheelView.WHEEL_SIZE, wheel.getLayoutParams().height);
+        assertEquals(5, wheel.getCurrentPosition());
+    }
+
     // 首次布局时父容器为 GONE，旧实现会永久丢失 item 高度，之后选中和回调都失效（issue #20 #55 #72）
     @Test
     public void wheelWorksAfterParentBecomesVisible() {
