@@ -100,8 +100,9 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                 }
                 if (mJoinWheelView != null) {
                     if (!mJoinMap.isEmpty()) {
-                        mJoinWheelView.resetDataFromTop(mJoinMap.get(mList.get
-                                (getCurrentPosition()))
+                        // 联动数据的 key 是条目的显示文本（toString），条目不是 String 时也能找到对应数据
+                        mJoinWheelView.resetDataFromTop(mJoinMap.get(String.valueOf(mList.get
+                                (getCurrentPosition())))
                         );
                     } else {
                         throw new WheelViewException("JoinList is error.");
@@ -275,6 +276,11 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      */
     public void setStyle(@NonNull WheelViewStyle style) {
         mStyle = style;
+        // 已完成布局时立即刷新，否则要等到下次滚动才生效
+        if (mLayoutReady) {
+            refreshCurrentPosition(false);
+            setBackground();
+        }
     }
 
     /**
@@ -307,6 +313,9 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      */
     public void setSkin(@NonNull Skin skin) {
         mSkin = skin;
+        if (mLayoutReady) {
+            setBackground();
+        }
     }
 
     /**
@@ -445,7 +454,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     /**
      * 副WheelView数据
      *
-     * @param map
+     * @param map key 为主滚轮条目的显示文本（即 toString() 的结果），value 为副滚轮的数据
      */
     public void joinDatas(@NonNull HashMap<String, List<T>> map) {
         mJoinMap = map;

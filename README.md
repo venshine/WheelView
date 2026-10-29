@@ -38,7 +38,7 @@ dependencyResolutionManagement {
 ```
 2. 在模块的 `build.gradle` 中添加依赖：
 ```groovy
-implementation 'com.github.venshine:WheelView:2.0.0'
+implementation 'com.github.venshine:WheelView:2.0.1'
 ```
 
 > 2.0.0 起改为通过 JitPack 发布，旧坐标 `com.wx.wheelview:wheelview` 已无法下载。
@@ -100,7 +100,7 @@ wheelView.style = WheelView.WheelViewStyle().apply {
 | void **setSelection**(final int selection) 	     | 设置滚轮位置 |
 | int **getSelection**() 	     | 获取滚轮位置 |
 | void **join**(WheelView wheelView)  	     | 连接副WheelView（联动设置） |
-| void **joinDatas**(HashMap<String, List<T>> map)	     | 副WheelView数据（联动设置） |
+| void **joinDatas**(HashMap<String, List<T>> map)	     | 副WheelView数据（联动设置），key 为主滚轮条目的显示文本（toString()） |
 | int **getCurrentPosition**()  	     | 获取当前滚轮位置 |
 | T **getSelectionItem**()  	     | 获取当前滚轮位置的数据 |
 | void **setExtraText**(String text, int textColor, int textSize, int margin)     	     | 设置选中行附加文本 |
