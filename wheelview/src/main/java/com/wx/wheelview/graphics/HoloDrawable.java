@@ -41,12 +41,12 @@ public class HoloDrawable extends WheelDrawable {
 
     private void init() {
         mHoloBgPaint = new Paint();
-        mHoloBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor : WheelConstants
+        mHoloBgPaint.setColor(mStyle.backgroundColor != null ? mStyle.backgroundColor : WheelConstants
                 .WHEEL_SKIN_HOLO_BG);
 
         mHoloPaint = new Paint();
         mHoloPaint.setStrokeWidth(mStyle.holoBorderWidth != -1 ? mStyle.holoBorderWidth : 3);
-        mHoloPaint.setColor(mStyle.holoBorderColor != -1 ? mStyle.holoBorderColor : WheelConstants
+        mHoloPaint.setColor(mStyle.holoBorderColor != null ? mStyle.holoBorderColor : WheelConstants
                 .WHEEL_SKIN_HOLO_BORDER_COLOR);
     }
 

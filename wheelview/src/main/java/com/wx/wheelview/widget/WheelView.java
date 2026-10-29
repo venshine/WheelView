@@ -15,6 +15,9 @@
  */
 package com.wx.wheelview.widget;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -66,6 +69,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private int mExtraMargin;   // 附加文本外边距
     private boolean mExtraTextBold; // 附加文本是否加粗
     private int mSelection = 0; // 选中位置
+    private boolean mSelectionPending = false; // 首次布局完成前设置的选中位置，待布局后生效
+    private boolean mLayoutReady = false; // 是否已按 item 高度完成首次布局
     private boolean mClickable = CLICKABLE; // 是否可点击
 
     private Paint mTextPaint;   // 附加文本画笔
@@ -178,7 +183,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @param onWheelItemSelectedListener
      */
-    public void setOnWheelItemSelectedListener(OnWheelItemSelectedListener<T>
+    public void setOnWheelItemSelectedListener(@Nullable OnWheelItemSelectedListener<T>
                                                        onWheelItemSelectedListener) {
         mOnWheelItemSelectedListener = onWheelItemSelectedListener;
     }
@@ -188,7 +193,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @param onWheelItemClickListener
      */
-    public void setOnWheelItemClickListener(OnWheelItemClickListener<T> onWheelItemClickListener) {
+    public void setOnWheelItemClickListener(@Nullable OnWheelItemClickListener<T> onWheelItemClickListener) {
         mOnWheelItemClickListener = onWheelItemClickListener;
     }
 
@@ -223,24 +228,32 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                 .OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                // 控件或父容器不可见、数据未设置时还没有 item，继续等待下一次布局，拿到 item 高度后才移除监听
+                if (getChildCount() == 0 || getChildAt(0).getHeight() == 0) {
+                    return;
+                }
+                if (mItemH == 0) {
+                    mItemH = getChildAt(0).getHeight();
+                    ViewGroup.LayoutParams params = getLayoutParams();
+                    params.height = mItemH * mWheelSize;
+                    setLayoutParams(params);
+                    // 高度变化会触发重新布局，在新高度下完成布局后（下一次回调）再定位，否则会按旧高度定位而错位
+                    return;
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
                     getViewTreeObserver().removeGlobalOnLayoutListener(this);
                 }
-                if (getChildCount() > 0 && mItemH == 0) {
-                    mItemH = getChildAt(0).getHeight();
-                    if (mItemH != 0) {
-                        ViewGroup.LayoutParams params = getLayoutParams();
-                        params.height = mItemH * mWheelSize;
-                        refreshVisibleItems(getFirstVisiblePosition(),
-                                getCurrentPosition() + mWheelSize / 2,
-                                mWheelSize / 2);
-                        setBackground();
-                    } else {
-                        throw new WheelViewException("wheel item is error.");
-                    }
+                mLayoutReady = true;
+                if (mSelectionPending) {
+                    mSelectionPending = false;
+                    WheelView.super.setSelection(getRealPosition(mSelection));
                 }
+                refreshVisibleItems(getFirstVisiblePosition(),
+                        getCurrentPosition() + mWheelSize / 2,
+                        mWheelSize / 2);
+                setBackground();
             }
         });
     }
@@ -250,6 +263,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @return
      */
+    @NonNull
     public WheelViewStyle getStyle() {
         return mStyle;
     }
@@ -259,7 +273,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @param style
      */
-    public void setStyle(WheelViewStyle style) {
+    public void setStyle(@NonNull WheelViewStyle style) {
         mStyle = style;
     }
 
@@ -281,6 +295,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @return
      */
+    @NonNull
     public Skin getSkin() {
         return mSkin;
     }
@@ -290,7 +305,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @param skin
      */
-    public void setSkin(Skin skin) {
+    public void setSkin(@NonNull Skin skin) {
         mSkin = skin;
     }
 
@@ -372,7 +387,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @param list
      */
-    public void resetDataFromTop(final List<T> list) {
+    public void resetDataFromTop(@NonNull final List<T> list) {
         if (WheelUtils.isEmpty(list)) {
             throw new WheelViewException("join map data is error.");
         }
@@ -405,15 +420,13 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     @Override
     public void setSelection(final int selection) {
         mSelection = selection;
-        setVisibility(View.INVISIBLE);
-        WheelView.this.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                WheelView.super.setSelection(getRealPosition(selection));
-                refreshCurrentPosition(false);
-                setVisibility(View.VISIBLE);
-            }
-        }, 500);
+        if (!mLayoutReady) {
+            // 尚未完成首次布局，等拿到 item 高度后再定位
+            mSelectionPending = true;
+            return;
+        }
+        // 定位后的布局过程会回调 onScroll，由 refreshCurrentPosition 更新当前位置和样式
+        super.setSelection(getRealPosition(selection));
     }
 
     /**
@@ -422,7 +435,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param wheelView
      */
     @Override
-    public void join(WheelView wheelView) {
+    public void join(@NonNull WheelView wheelView) {
         if (wheelView == null) {
             throw new WheelViewException("wheelview cannot be null.");
         }
@@ -434,7 +447,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @param map
      */
-    public void joinDatas(HashMap<String, List<T>> map) {
+    public void joinDatas(@NonNull HashMap<String, List<T>> map) {
         mJoinMap = map;
     }
 
@@ -469,6 +482,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      *
      * @return
      */
+    @Nullable
     public T getSelectionItem() {
         int position = getCurrentPosition();
         position = Math.max(position, 0);
@@ -500,7 +514,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param adapter
      */
     @Override
-    public void setWheelAdapter(BaseWheelAdapter<T> adapter) {
+    public void setWheelAdapter(@NonNull BaseWheelAdapter<T> adapter) {
         super.setAdapter(adapter);
         mWheelAdapter = adapter;
         mWheelAdapter.setData(mList).setWheelSize(mWheelSize).setLoop(mLoop).setClickable(mClickable);
@@ -512,7 +526,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param list
      */
     @Override
-    public void setWheelData(List<T> list) {
+    public void setWheelData(@NonNull List<T> list) {
         if (WheelUtils.isEmpty(list)) {
             throw new WheelViewException("wheel datas are error.");
         }
@@ -530,7 +544,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param textSize  文本大小
      * @param margin    距中心水平方向的距离
      */
-    public void setExtraText(String text, int textColor, int textSize, int
+    public void setExtraText(@Nullable String text, int textColor, int textSize, int
             margin) {
         setExtraText(text, textColor, textSize, margin, false);
     }
@@ -544,7 +558,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param margin    距中心水平方向的距离
      * @param textBold  文本是否加粗
      */
-    public void setExtraText(String text, int textColor, int textSize, int
+    public void setExtraText(@Nullable String text, int textColor, int textSize, int
             margin, boolean textBold) {
         mExtraText = text;
         mExtraTextColor = textColor;
@@ -652,8 +666,8 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     private void refreshTextView(int position, int curPosition, View
             itemView, TextView textView) {
         if (curPosition == position) { // 选中
-            int textColor = mStyle.selectedTextColor != -1 ? mStyle
-                    .selectedTextColor : (mStyle.textColor != -1 ? mStyle
+            int textColor = mStyle.selectedTextColor != null ? mStyle
+                    .selectedTextColor : (mStyle.textColor != null ? mStyle
                     .textColor : WheelConstants.WHEEL_TEXT_COLOR);
             float defTextSize = mStyle.textSize != -1 ? mStyle.textSize :
                     WheelConstants.WHEEL_TEXT_SIZE;
@@ -664,7 +678,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             boolean textBold = mStyle.selectedTextBold;
             setTextView(itemView, textView, textColor, textSize, 1.0f, textBold);
         } else {    // 未选中
-            int textColor = mStyle.textColor != -1 ? mStyle.textColor :
+            int textColor = mStyle.textColor != null ? mStyle.textColor :
                     WheelConstants.WHEEL_TEXT_COLOR;
             float textSize = mStyle.textSize != -1 ? mStyle.textSize :
                     WheelConstants.WHEEL_TEXT_SIZE;
@@ -733,11 +747,16 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
 
     public static class WheelViewStyle {
 
-        public int backgroundColor = -1; // 背景颜色
-        public int holoBorderColor = -1;   // holo样式边框颜色
+        // 颜色用 null 表示未设置：任何 int 都是合法颜色，用 -1 作标记会让 Color.WHITE 无法生效
+        @Nullable
+        public Integer backgroundColor; // 背景颜色
+        @Nullable
+        public Integer holoBorderColor;   // holo样式边框颜色
         public int holoBorderWidth = -1;//holo样式边框宽度
-        public int textColor = -1; // 文本颜色
-        public int selectedTextColor = -1; // 选中文本颜色
+        @Nullable
+        public Integer textColor; // 文本颜色
+        @Nullable
+        public Integer selectedTextColor; // 选中文本颜色
         public int textSize = -1;// 文本大小
         public int selectedTextSize = -1;   // 选中文本大小
         public float textAlpha = -1;  // 文本透明度(0f ~ 1f)
@@ -747,7 +766,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         public WheelViewStyle() {
         }
 
-        public WheelViewStyle(WheelViewStyle style) {
+        public WheelViewStyle(@NonNull WheelViewStyle style) {
             this.backgroundColor = style.backgroundColor;
             this.holoBorderColor = style.holoBorderColor;
             this.holoBorderWidth = style.holoBorderWidth;

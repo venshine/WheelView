@@ -15,6 +15,8 @@
  */
 package com.wx.wheelview.widget;
 
+import androidx.annotation.NonNull;
+
 import com.wx.wheelview.adapter.BaseWheelAdapter;
 
 import java.util.HashMap;
@@ -68,28 +70,28 @@ public interface IWheelView<T> {
      *
      * @param list
      */
-    void setWheelData(List<T> list);
+    void setWheelData(@NonNull List<T> list);
 
     /**
      * 设置滚轮数据源适配器
      *
      * @param adapter
      */
-    void setWheelAdapter(BaseWheelAdapter<T> adapter);
+    void setWheelAdapter(@NonNull BaseWheelAdapter<T> adapter);
 
     /**
      * 连接副WheelView
      *
      * @param wheelView
      */
-    void join(WheelView wheelView);
+    void join(@NonNull WheelView wheelView);
 
     /**
      * 副WheelView数据
      *
      * @param map
      */
-    void joinDatas(HashMap<String, List<T>> map);
+    void joinDatas(@NonNull HashMap<String, List<T>> map);
 
 
 }

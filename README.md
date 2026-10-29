@@ -26,16 +26,39 @@ ScreenShot
 Usage
 --
 ##### Gradle:
+1. 在 `settings.gradle` 中添加 JitPack 仓库：
 ```groovy
-compile 'com.wx.wheelview:wheelview:1.3.3'
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = 'https://jitpack.io' }
+    }
+}
+```
+2. 在模块的 `build.gradle` 中添加依赖：
+```groovy
+implementation 'com.github.venshine:WheelView:2.0.0'
 ```
 
-##### 导入Eclipse:
-[下载jar包](https://github.com/ifwx/WheelView/raw/master/wheelview/wheelview_1.3.3.jar)
+> 2.0.0 起改为通过 JitPack 发布，旧坐标 `com.wx.wheelview:wheelview` 已无法下载。
+> `WheelViewStyle` 的颜色字段（`backgroundColor`、`holoBorderColor`、`textColor`、`selectedTextColor`）改为 `Integer`，`null` 表示使用默认颜色，现在可以正常设置 `Color.WHITE`。
 
 Demo
 --
-Use the WheelView as a View, Java and XML are both supported.
+Use the WheelView as a View, Kotlin, Java and XML are both supported.
+
+##### Kotlin:
+```kotlin
+val wheelView = findViewById<WheelView<String>>(R.id.wheelview)
+wheelView.setWheelAdapter(ArrayWheelAdapter(this)) // 文本数据源
+wheelView.skin = WheelView.Skin.Common // common皮肤
+wheelView.setWheelData(listOf("item0", "item1", "item2")) // 数据集合
+wheelView.style = WheelView.WheelViewStyle().apply {
+    textColor = Color.GRAY
+    selectedTextColor = Color.WHITE
+}
+```
 
 ##### Java:
 ```Java

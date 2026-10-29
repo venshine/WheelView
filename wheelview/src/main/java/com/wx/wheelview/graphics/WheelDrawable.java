@@ -48,7 +48,7 @@ public class WheelDrawable extends Drawable {
 
     private void init() {
         mBgPaint = new Paint();
-        mBgPaint.setColor(mStyle.backgroundColor != -1 ? mStyle.backgroundColor :
+        mBgPaint.setColor(mStyle.backgroundColor != null ? mStyle.backgroundColor :
                 WheelConstants.WHEEL_BG);
     }
 
