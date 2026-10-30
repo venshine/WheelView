@@ -623,6 +623,16 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     }
 
     @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        // 高度固定为 条目高 × 滚轮个数：ViewPager 等容器会忽略 LayoutParams 强制撑满，
+        // 数据一屏放得下时无法滚动，setSelection 等都失效（issue #63）
+        if (mItemH != 0) {
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(mItemH * mWheelSize, MeasureSpec.EXACTLY);
+        }
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
     public boolean onGenericMotionEvent(MotionEvent event) {
         boolean handled = super.onGenericMotionEvent(event);
         // 鼠标滚轮直接移动列表，不会回调 SCROLL_STATE_IDLE，停止滚动后主动对齐（issue #66）
@@ -723,7 +733,7 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
                     (defTextSize * mStyle.selectedTextZoom) :
                     defTextSize);
             boolean textBold = mStyle.selectedTextBold;
-            setTextView(itemView, textView, textColor, textSize, 1.0f, textBold);
+            setTextView(itemView, textView, textColor, textSize, 1.0f, 1.0f, textBold);
         } else {    // 未选中
             int textColor = mStyle.textColor != null ? mStyle.textColor :
                     WheelConstants.WHEEL_TEXT_COLOR;
@@ -733,7 +743,9 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             float alpha = (float) Math.pow(mStyle.textAlpha != -1 ? mStyle.textAlpha :
                     WheelConstants
                             .WHEEL_TEXT_ALPHA, delta);
-            setTextView(itemView, textView, textColor, textSize, alpha, false);
+            // 用缩放实现字号递减：直接改字号会在每帧滚动时触发重新布局
+            float scale = mStyle.textScale != -1 ? (float) Math.pow(mStyle.textScale, delta) : 1.0f;
+            setTextView(itemView, textView, textColor, textSize, alpha, scale, false);
         }
     }
 
@@ -745,11 +757,14 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
      * @param textColor
      * @param textSize
      * @param textAlpha
+     * @param textScale
      */
     private void setTextView(View itemView, TextView textView, int textColor, float textSize,
-                             float textAlpha, boolean textBold) {
+                             float textAlpha, float textScale, boolean textBold) {
         textView.setTextColor(textColor);
         textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
+        textView.setScaleX(textScale);
+        textView.setScaleY(textScale);
         itemView.setAlpha(textAlpha);
         try {
             textView.getPaint().setFakeBoldText(textBold);
@@ -804,9 +819,12 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         public Integer textColor; // 文本颜色
         @Nullable
         public Integer selectedTextColor; // 选中文本颜色
+        @Nullable
+        public Integer selectedBackgroundColor; // 选中项背景颜色，Common 和 Holo 皮肤生效
         public int textSize = -1;// 文本大小
         public int selectedTextSize = -1;   // 选中文本大小
         public float textAlpha = -1;  // 文本透明度(0f ~ 1f)
+        public float textScale = -1;  // 未选中文本缩放比例(0f ~ 1f)，离选中项每远一项再缩放一次
         public float selectedTextZoom = -1; // 选中文本放大倍数
         public boolean selectedTextBold; // 选中文本是否加粗
 
@@ -819,9 +837,11 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
             this.holoBorderWidth = style.holoBorderWidth;
             this.textColor = style.textColor;
             this.selectedTextColor = style.selectedTextColor;
+            this.selectedBackgroundColor = style.selectedBackgroundColor;
             this.textSize = style.textSize;
             this.selectedTextSize = style.selectedTextSize;
             this.textAlpha = style.textAlpha;
+            this.textScale = style.textScale;
             this.selectedTextZoom = style.selectedTextZoom;
             this.selectedTextBold = style.selectedTextBold;
         }

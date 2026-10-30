@@ -38,7 +38,7 @@ dependencyResolutionManagement {
 ```
 2. 在模块的 `build.gradle` 中添加依赖：
 ```groovy
-implementation 'com.github.venshine:WheelView:2.0.2'
+implementation 'com.github.venshine:WheelView:2.1.0'
 ```
 
 ##### Gradle Kotlin DSL:
@@ -53,7 +53,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.venshine:WheelView:2.0.2")
+implementation("com.github.venshine:WheelView:2.1.0")
 ```
 
 > 2.0.0 起改为通过 JitPack 发布，旧坐标 `com.wx.wheelview:wheelview` 已无法下载。
@@ -78,6 +78,8 @@ class MainActivity : AppCompatActivity() {
         wheelView.style = WheelView.WheelViewStyle().apply {
             selectedTextColor = Color.BLACK
             holoBorderColor = Color.LTGRAY // 分割线颜色
+            selectedBackgroundColor = Color.parseColor("#f2f2f2") // 选中项背景
+            textScale = 0.85f // 未选中项逐级缩小
         }
         wheelView.setOnWheelItemSelectedListener { position, item ->
             Log.d("WheelView", "selected $position: $item")
@@ -113,6 +115,7 @@ WheelViewDialog<String>(this)
 ```
 
 > 在代码里用 `WheelView(context)` 创建的滚轮，需要先 `addView` 到界面中才会显示。
+> 滚轮高度固定为「条目高度 × 滚轮个数」（`setWheelSize`），`layout_height` 不生效；需要其他高度时，可以继承 `BaseWheelAdapter` 自定义条目布局。
 
 ##### Java:
 ```Java
@@ -170,9 +173,11 @@ public class MainActivity extends Activity {
 | int **holoBorderWidth** | Holo 皮肤选中框分割线宽度，单位 px，默认 3 |
 | Integer **textColor** | 文本颜色 |
 | Integer **selectedTextColor** | 选中文本颜色 |
+| Integer **selectedBackgroundColor** | 选中项背景颜色，Common 和 Holo 皮肤生效 |
 | int **textSize** | 文本大小，单位 dp，默认 16 |
 | int **selectedTextSize** | 选中文本大小，单位 dp |
 | float **textAlpha** | 未选中文本透明度（0f ~ 1f），离选中项越远越透明，默认 0.7 |
+| float **textScale** | 未选中文本缩放比例（0f ~ 1f），离选中项每远一项再缩小一次，默认不缩放 |
 | float **selectedTextZoom** | 选中文本放大倍数，未设置 selectedTextSize 时生效 |
 | boolean **selectedTextBold** | 选中文本是否加粗 |
 

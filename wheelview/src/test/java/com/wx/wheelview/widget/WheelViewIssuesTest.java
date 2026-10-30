@@ -20,6 +20,9 @@ import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+
 import com.wx.wheelview.adapter.ArrayWheelAdapter;
 import com.wx.wheelview.common.WheelConstants;
 
@@ -341,6 +344,100 @@ public class WheelViewIssuesTest {
             assertEquals(wheel.getChildAt(0).getHeight() * WheelView.WHEEL_SIZE, wheel.getHeight());
             assertTrue(wheel.getChildAt(0).getAlpha() < 1f);
         }
+    }
+
+    // 选中项背景色（issue #38）
+    @Test
+    @GraphicsMode(GraphicsMode.Mode.NATIVE)
+    public void selectedBackgroundColorIsDrawn() {
+        for (WheelView.Skin skin : new WheelView.Skin[]{WheelView.Skin.Common, WheelView.Skin.Holo}) {
+            WheelView<String> wheel = createWheel(Arrays.asList("a", "b", "c", "d", "e"));
+            wheel.setSkin(skin);
+            WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
+            style.selectedBackgroundColor = Color.YELLOW;
+            wheel.setStyle(style);
+            show(wheel);
+
+            int itemH = wheel.getChildAt(0).getHeight();
+            Bitmap bitmap = Bitmap.createBitmap(wheel.getWidth(), wheel.getHeight(), Bitmap.Config.ARGB_8888);
+            wheel.getBackground().draw(new Canvas(bitmap));
+            int centerY = itemH * (WheelView.WHEEL_SIZE / 2) + itemH / 2;
+            assertEquals(skin.name(), Color.YELLOW, bitmap.getPixel(wheel.getWidth() / 2, centerY));
+        }
+    }
+
+    // 未选中项文字按距离逐级缩小（issue #56）
+    @Test
+    public void textScaleDecreasesWithDistance() {
+        WheelView<String> wheel = createWheel(Arrays.asList("a", "b", "c", "d", "e", "f", "g"));
+        wheel.setWheelSize(5);
+        WheelView.WheelViewStyle style = new WheelView.WheelViewStyle();
+        style.textScale = 0.8f;
+        wheel.setStyle(style);
+        show(wheel);
+        wheel.setSelection(3);
+        idle(100);
+
+        int center = wheel.getChildCount() / 2;
+        assertEquals(1f, textAt(wheel, center).getScaleX(), 0.001f);
+        assertEquals(0.8f, textAt(wheel, center - 1).getScaleX(), 0.001f);
+        assertEquals(0.8f, textAt(wheel, center + 1).getScaleY(), 0.001f);
+        assertEquals(0.64f, textAt(wheel, center - 2).getScaleX(), 0.001f);
+    }
+
+    private static TextView textAt(WheelView<?> wheel, int index) {
+        return wheel.getChildAt(index).findViewWithTag(WheelConstants.WHEEL_ITEM_TEXT_TAG);
+    }
+
+    // ViewPager 忽略子 View 的 LayoutParams 高度、强制撑满整页，滚轮高度不再是 条目高 × 个数，
+    // 数据一屏放得下时无法滚动，setSelection 等都失效（issue #63）
+    @Test
+    public void wheelWorksInViewPager() {
+        final List<WheelView<String>> wheels = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            WheelView<String> wheel = createWheel(Arrays.asList("a", "b", "c", "d", "e", "f"));
+            wheel.setSelection(3);
+            wheels.add(wheel);
+        }
+        ViewPager pager = new ViewPager(activity);
+        pager.setAdapter(new PagerAdapter() {
+            @Override
+            public int getCount() {
+                return wheels.size();
+            }
+
+            @Override
+            public boolean isViewFromObject(View view, Object object) {
+                return view == object;
+            }
+
+            @Override
+            public Object instantiateItem(ViewGroup container, int position) {
+                container.addView(wheels.get(position), new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+                return wheels.get(position);
+            }
+
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
+                container.removeView((View) object);
+            }
+        });
+        activity.setContentView(pager);
+        idle(100);
+        pager.setCurrentItem(2, false);
+        idle(100);
+        pager.setCurrentItem(0, false);
+        idle(100);
+
+        for (WheelView<String> wheel : wheels) {
+            assertEquals(3, wheel.getCurrentPosition());
+            assertEquals("d", centerText(wheel).getText().toString());
+            assertEquals(wheel.getChildAt(0).getHeight() * WheelView.WHEEL_SIZE, wheel.getHeight());
+        }
+        wheels.get(1).setSelection(5);
+        idle(100);
+        assertEquals("f", centerText(wheels.get(1)).getText().toString());
     }
 
     private static WheelView<?> findWheel(View view) {
