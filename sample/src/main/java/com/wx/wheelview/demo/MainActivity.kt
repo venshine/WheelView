@@ -19,6 +19,9 @@ import android.app.Activity
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import com.wx.wheelview.adapter.ArrayWheelAdapter
 import com.wx.wheelview.adapter.SimpleWheelAdapter
 import com.wx.wheelview.common.WheelData
@@ -36,6 +39,14 @@ class MainActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        // targetSdk 35 起，Android 15+ 强制全面屏，内容需要避开状态栏和导航栏
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
+            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+            view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
+            insets
+        }
+        // 浅色背景上使用深色状态栏图标
+        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
 
         initWheel1()
         initWheel2()
