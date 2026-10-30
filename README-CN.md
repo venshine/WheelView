@@ -2,7 +2,7 @@
 
 [English](README.md) | 简体中文
 
-[![JitPack](https://jitpack.io/v/venshine/WheelView.svg)](https://jitpack.io/#venshine/WheelView)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-WheelView-green.svg?style=true)](https://android-arsenal.com/details/1/3853)  [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
+[![JitPack](https://jitpack.io/v/venshine/WheelView.svg)](https://jitpack.io/#venshine/WheelView)  [![CI](https://github.com/venshine/WheelView/actions/workflows/ci.yml/badge.svg)](https://github.com/venshine/WheelView/actions/workflows/ci.yml)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-WheelView-green.svg?style=true)](https://android-arsenal.com/details/1/3853)  [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 Android滚轮控件，基于ListView实现，可以自定义样式。
 

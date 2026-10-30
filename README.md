@@ -2,7 +2,7 @@
 
 English | [简体中文](README-CN.md)
 
-[![JitPack](https://jitpack.io/v/venshine/WheelView.svg)](https://jitpack.io/#venshine/WheelView)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-WheelView-green.svg?style=true)](https://android-arsenal.com/details/1/3853)  [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
+[![JitPack](https://jitpack.io/v/venshine/WheelView.svg)](https://jitpack.io/#venshine/WheelView)  [![CI](https://github.com/venshine/WheelView/actions/workflows/ci.yml/badge.svg)](https://github.com/venshine/WheelView/actions/workflows/ci.yml)  [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-WheelView-green.svg?style=true)](https://android-arsenal.com/details/1/3853)  [![API](https://img.shields.io/badge/API-14%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=14)
 
 A wheel picker for Android, built on ListView, with customizable styles.
 
