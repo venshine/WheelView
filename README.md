@@ -6,6 +6,8 @@ English | [简体中文](README-CN.md)
 
 A wheel picker for Android, built on ListView, with customizable styles.
 
+[**Download the sample APK**](https://github.com/venshine/WheelView/releases/download/2.1.0/WheelView-sample-2.1.0.apk)
+
 Features
 --
 * Customizable wheel style

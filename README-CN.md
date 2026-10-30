@@ -6,6 +6,8 @@
 
 Android滚轮控件，基于ListView实现，可以自定义样式。
 
+[**下载示例 APK**](https://github.com/venshine/WheelView/releases/download/2.1.0/WheelView-sample-2.1.0.apk)
+
 Features
 --
 * 支持自定义滚轮样式
