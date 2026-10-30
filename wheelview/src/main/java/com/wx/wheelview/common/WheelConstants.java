@@ -120,6 +120,11 @@ public class WheelConstants {
     public static final int WHEEL_SCROLL_DELAY_DURATION = 300;
 
     /**
+     * 鼠标滚轮停止滚动后对齐选中项的延迟时间
+     */
+    public static final int WHEEL_ADJUST_DELAY_DURATION = 100;
+
+    /**
      * dialog默认颜色
      */
     public static final int DIALOG_WHEEL_COLOR = WHEEL_SKIN_HOLO_BORDER_COLOR;

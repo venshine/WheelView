@@ -31,6 +31,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -126,26 +127,20 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         return false;
     };
 
+    private boolean mAdjusting = false; // 正在发起对齐滚动，期间同步回调的 IDLE 不再触发对齐
+
+    private final Runnable mAdjustRunnable = this::adjustPosition;
+
+    private final Runnable mRefreshRunnable = () -> refreshCurrentPosition(false);
+
     private OnScrollListener mOnScrollListener = new OnScrollListener() {
         @Override
         public void onScrollStateChanged(AbsListView view, int scrollState) {
-            if (scrollState == SCROLL_STATE_IDLE) {
-                View itemView = getChildAt(0);
-                if (itemView != null) {
-                    float deltaY = itemView.getY();
-                    if (deltaY == 0 || mItemH == 0) {
-                        return;
-                    }
-                    if (Math.abs(deltaY) < mItemH >> 1) {
-                        int d = getSmoothDistance(deltaY);
-                        smoothScrollBy(d, WheelConstants
-                                .WHEEL_SMOOTH_SCROLL_DURATION);
-                    } else {
-                        int d = getSmoothDistance(mItemH + deltaY);
-                        smoothScrollBy(d, WheelConstants
-                                .WHEEL_SMOOTH_SCROLL_DURATION);
-                    }
-                }
+            removeCallbacks(mAdjustRunnable);
+            // 部分 ROM 在 smoothScrollBy 内部会同步回调 IDLE，再次对齐会无限递归（issue #41）；
+            // 放到回调外执行，在回调里直接 smoothScrollBy 在部分机型上不生效（issue #13）
+            if (scrollState == SCROLL_STATE_IDLE && !mAdjusting) {
+                post(mAdjustRunnable);
             }
         }
 
@@ -403,9 +398,12 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         WheelView.this.postDelayed(new Runnable() {
             @Override
             public void run() {
+                // 主滚轮切换导致数据变化时副滚轮回到第一项（issue #69）；数据不变时保留位置，
+                // 否则初始化时恢复的副滚轮选中项会被主滚轮首次联动回调重置
+                boolean changed = !list.equals(mList);
                 setWheelData(list);
-                if (getCurrentPosition() >= list.size()) {
-                    WheelView.super.setSelection(list.size() - 1);
+                if (changed) {
+                    setSelection(0);
                 }
                 refreshCurrentPosition(true);
             }
@@ -602,6 +600,40 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
     }
 
     /**
+     * 把最靠近中间的条目对齐到选中框
+     */
+    private void adjustPosition() {
+        View itemView = getChildAt(0);
+        if (itemView == null || mItemH == 0) {
+            return;
+        }
+        float deltaY = itemView.getY();
+        int d = Math.abs(deltaY) < mItemH >> 1 ? getSmoothDistance(deltaY)
+                : getSmoothDistance(mItemH + deltaY);
+        // 已对齐：距离为 0 时 smoothScrollBy 会直接 endFling 并再次回调 IDLE
+        if (d == 0) {
+            return;
+        }
+        mAdjusting = true;
+        try {
+            smoothScrollBy(d, WheelConstants.WHEEL_SMOOTH_SCROLL_DURATION);
+        } finally {
+            mAdjusting = false;
+        }
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        boolean handled = super.onGenericMotionEvent(event);
+        // 鼠标滚轮直接移动列表，不会回调 SCROLL_STATE_IDLE，停止滚动后主动对齐（issue #66）
+        if (event.getAction() == MotionEvent.ACTION_SCROLL) {
+            removeCallbacks(mAdjustRunnable);
+            postDelayed(mAdjustRunnable, WheelConstants.WHEEL_ADJUST_DELAY_DURATION);
+        }
+        return handled;
+    }
+
+    /**
      * 刷新当前位置
      *
      * @param join
@@ -620,8 +652,14 @@ public class WheelView<T> extends ListView implements IWheelView<T> {
         } else {
             position = firstPosition + 1;
         }
-        refreshVisibleItems(firstPosition, position + mWheelSize / 2,
-                mWheelSize / 2);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2 && isInLayout()) {
+            // 布局过程中修改文字大小会再次 requestLayout 并产生警告（issue #53），推迟到布局结束后刷新样式
+            removeCallbacks(mRefreshRunnable);
+            post(mRefreshRunnable);
+        } else {
+            refreshVisibleItems(firstPosition, position + mWheelSize / 2,
+                    mWheelSize / 2);
+        }
         if (mLoop) {
             position = (position + mWheelSize / 2) % getWheelCount();
         }

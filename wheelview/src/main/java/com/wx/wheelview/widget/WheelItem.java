@@ -64,9 +64,8 @@ public class WheelItem extends FrameLayout {
                 WheelConstants
                         .WHEEL_ITEM_HEIGHT));
         layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setPadding(WheelConstants.WHEEL_ITEM_PADDING, WheelConstants.WHEEL_ITEM_PADDING,
-                WheelConstants
-                .WHEEL_ITEM_PADDING, WheelConstants.WHEEL_ITEM_PADDING);
+        // 只留水平内边距：条目高度是 45dp，上下各 20px 在低密度屏上会把文字挤得只剩几像素（issue #28 #36）
+        layout.setPadding(WheelConstants.WHEEL_ITEM_PADDING, 0, WheelConstants.WHEEL_ITEM_PADDING, 0);
         layout.setGravity(Gravity.CENTER);
         addView(layout, layoutParams);
 

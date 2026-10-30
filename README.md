@@ -38,51 +38,104 @@ dependencyResolutionManagement {
 ```
 2. 在模块的 `build.gradle` 中添加依赖：
 ```groovy
-implementation 'com.github.venshine:WheelView:2.0.1'
+implementation 'com.github.venshine:WheelView:2.0.2'
+```
+
+##### Gradle Kotlin DSL:
+```kotlin
+// settings.gradle.kts
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
+    }
+}
+
+// build.gradle.kts
+implementation("com.github.venshine:WheelView:2.0.2")
 ```
 
 > 2.0.0 起改为通过 JitPack 发布，旧坐标 `com.wx.wheelview:wheelview` 已无法下载。
 > `WheelViewStyle` 的颜色字段（`backgroundColor`、`holoBorderColor`、`textColor`、`selectedTextColor`）改为 `Integer`，`null` 表示使用默认颜色，现在可以正常设置 `Color.WHITE`。
+> 2.0.2 起，联动时主滚轮切换导致副滚轮数据变化，副滚轮会回到第一项（之前保持原位置）。
 
 Demo
 --
-Use the WheelView as a View, Kotlin, Java and XML are both supported.
+库本身用 Java 编写，Java 和 Kotlin 都可以直接调用，不会给项目额外引入 Kotlin 依赖。
 
 ##### Kotlin:
 ```kotlin
-val wheelView = findViewById<WheelView<String>>(R.id.wheelview)
-wheelView.setWheelAdapter(ArrayWheelAdapter(this)) // 文本数据源
-wheelView.skin = WheelView.Skin.Common // common皮肤
-wheelView.setWheelData(listOf("item0", "item1", "item2")) // 数据集合
-wheelView.style = WheelView.WheelViewStyle().apply {
-    textColor = Color.GRAY
-    selectedTextColor = Color.WHITE
+class MainActivity : AppCompatActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        val wheelView = findViewById<WheelView<String>>(R.id.wheelview)
+        wheelView.setWheelAdapter(ArrayWheelAdapter(this)) // 文本数据源
+        wheelView.skin = WheelView.Skin.Holo // holo皮肤
+        wheelView.setWheelData(listOf("item0", "item1", "item2", "item3", "item4")) // 数据集合
+        wheelView.style = WheelView.WheelViewStyle().apply {
+            selectedTextColor = Color.BLACK
+            holoBorderColor = Color.LTGRAY // 分割线颜色
+        }
+        wheelView.setOnWheelItemSelectedListener { position, item ->
+            Log.d("WheelView", "selected $position: $item")
+        }
+    }
 }
 ```
 
+联动（省市选择）：
+```kotlin
+val cities = hashMapOf(
+    "浙江" to listOf("杭州", "宁波", "温州"),
+    "江苏" to listOf("南京", "苏州", "无锡"),
+)
+val provinceWheel = findViewById<WheelView<String>>(R.id.province_wheelview)
+provinceWheel.setWheelAdapter(ArrayWheelAdapter(this))
+provinceWheel.setWheelData(listOf("浙江", "江苏"))
+val cityWheel = findViewById<WheelView<String>>(R.id.city_wheelview)
+cityWheel.setWheelAdapter(ArrayWheelAdapter(this))
+cityWheel.setWheelData(cities.getValue("浙江"))
+provinceWheel.join(cityWheel)
+provinceWheel.joinDatas(cities) // key 为主滚轮条目的显示文本
+```
+
+滚轮对话框：
+```kotlin
+WheelViewDialog<String>(this)
+    .setTitle("请选择")
+    .setItems(listOf("item0", "item1", "item2", "item3", "item4"))
+    .setButtonText("确定")
+    .setOnDialogItemClickListener { position, item -> Log.d("WheelView", "$position: $item") }
+    .show()
+```
+
+> 在代码里用 `WheelView(context)` 创建的滚轮，需要先 `addView` 到界面中才会显示。
+
 ##### Java:
 ```Java
-    public class MainActivity extends Activity {
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main)
+public class MainActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-            WheelView wheelView = (WheelView) findViewById(R.id.wheelview);
-            wheelView.setWheelAdapter(new ArrayWheelAdapter(this)); // 文本数据源
-            wheelView.setSkin(WheelView.Skin.Common); // common皮肤
-            wheelView.setWheelData( ?);  // 数据集合
-
-        }
+        WheelView<String> wheelView = findViewById(R.id.wheelview);
+        wheelView.setWheelAdapter(new ArrayWheelAdapter<>(this)); // 文本数据源
+        wheelView.setSkin(WheelView.Skin.Common); // common皮肤
+        wheelView.setWheelData(Arrays.asList("item0", "item1", "item2", "item3", "item4")); // 数据集合
     }
+}
 ```
 
 ##### XML:
 ```xml
-    <com.wx.wheelview.widget.WheelView
-            android:id="@+id/wheelview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+<com.wx.wheelview.widget.WheelView
+    android:id="@+id/wheelview"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" />
 ```
 
 ##### Methods:
@@ -109,6 +162,20 @@ wheelView.style = WheelView.WheelViewStyle().apply {
 | void **setOnWheelItemClickListener**(OnWheelItemClickListener<T> onWheelItemClickListener) | 设置滚轮选中项点击事件 |
 | WheelViewDialog **setDialogStyle**(int color) | 设置Dialog外观颜色 |
 
+##### WheelViewStyle:
+| field 字段          | description 描述 |
+|:---				 |:---|
+| Integer **backgroundColor** | 背景颜色，`null` 使用皮肤默认颜色 |
+| Integer **holoBorderColor** | Holo 皮肤选中框分割线颜色 |
+| int **holoBorderWidth** | Holo 皮肤选中框分割线宽度，单位 px，默认 3 |
+| Integer **textColor** | 文本颜色 |
+| Integer **selectedTextColor** | 选中文本颜色 |
+| int **textSize** | 文本大小，单位 dp，默认 16 |
+| int **selectedTextSize** | 选中文本大小，单位 dp |
+| float **textAlpha** | 未选中文本透明度（0f ~ 1f），离选中项越远越透明，默认 0.7 |
+| float **selectedTextZoom** | 选中文本放大倍数，未设置 selectedTextSize 时生效 |
+| boolean **selectedTextBold** | 选中文本是否加粗 |
+
 History
 --
 * 1.0.0(2016-03-24)
@@ -121,6 +188,7 @@ History
     - 支持滚轮对话框
 * 1.3.1(2016-04-18)
     - 增加滚轮选中项点击事件
+* 2.0.0 及之后的版本见 [Releases](https://github.com/venshine/WheelView/releases)
 
 About
 --
