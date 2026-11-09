@@ -1,3 +1,87 @@
 <resources>
     <string name="app_name">WheelView</string>
+
+    <string name="back">返回</string>
+    <string name="theme_to_dark">切换到深色模式</string>
+    <string name="theme_to_light">切换到浅色模式</string>
+    <string name="view_source">查看源码</string>
+    <string name="version_chip">v2.1.0</string>
+    <string name="copied">已复制</string>
+    <string name="cancel">取消</string>
+    <string name="confirm">确定</string>
+
+    <!-- 首页 -->
+    <string name="home_eyebrow">ANDROID · WHEEL PICKER</string>
+    <string name="home_title">把每一次选择，\n做出拨盘的手感</string>
+    <string name="home_desc">基于 ListView 的滚轮控件。三种皮肤、循环滚动、多级联动、附加单位、图文混排与对话框，一个依赖全部带走。</string>
+    <string name="home_preview">实时预览 · 拖动试试</string>
+    <string name="home_examples">示例</string>
+    <string name="home_examples_hint">5 个场景，均可交互</string>
+    <string name="home_install">接入</string>
+    <string name="home_install_hint">JitPack · API 14+</string>
+    <string name="home_copy_dependency">复制依赖</string>
+    <string name="home_copied_dependency">已复制依赖</string>
+    <string name="home_license">Apache-2.0</string>
+    <string name="home_author">© venshine</string>
+    <string name="weekday_format">星期%1$s</string>
+
+    <string name="demo_styles">样式实验室</string>
+    <string name="demo_styles_desc">切换皮肤、调缩放与透明度，实时生成 Kotlin 代码</string>
+    <string name="demo_linkage">三级联动</string>
+    <string name="demo_linkage_desc">省 · 市 · 区\njoin / joinDatas</string>
+    <string name="demo_time">时间与单位</string>
+    <string name="demo_time_desc">循环滚动\nsetExtraText</string>
+    <string name="demo_icon_text">图文混排</string>
+    <string name="demo_icon_text_desc">图标 + 文本\n点击与选中事件</string>
+    <string name="demo_dialog">底部弹窗</string>
+    <string name="demo_dialog_desc">表单里点选\n确认后回填</string>
+
+    <!-- 三级联动 -->
+    <string name="linkage_desc">主滚轮切换时，副滚轮的数据随之替换，并回到第一项。三个滚轮共用 Holo 皮肤。</string>
+    <string name="linkage_province">省份</string>
+    <string name="linkage_city">城市</string>
+    <string name="linkage_district">区县</string>
+    <string name="linkage_current">当前选择</string>
+    <string name="linkage_confirm">确认地址</string>
+    <string name="linkage_confirmed">已保存为收货地址</string>
+
+    <!-- 时间与单位 -->
+    <string name="time_label">提醒时间</string>
+    <string name="time_hint_format">距现在约 %1$d 小时 %2$d 分钟</string>
+    <string name="time_presets">快捷设置 · setSelection()</string>
+    <string name="time_loop">循环滚动</string>
+    <string name="time_loop_api">setLoop(boolean)</string>
+    <string name="time_bold">选中项加粗</string>
+    <string name="time_bold_api">style.selectedTextBold</string>
+
+    <!-- 样式实验室 -->
+    <string name="lab_reset">重置</string>
+    <string name="lab_preview">预览</string>
+    <string name="lab_skin">皮肤</string>
+    <string name="lab_text_scale">未选中缩放</string>
+    <string name="lab_text_alpha">未选中透明度</string>
+    <string name="lab_zoom">选中放大</string>
+    <string name="lab_selected_color">选中文字颜色</string>
+    <string name="lab_bold">选中加粗</string>
+    <string name="lab_loop">循环滚动</string>
+    <string name="lab_code">实时生成 · Kotlin</string>
+    <string name="lab_copy_code">复制代码</string>
+
+    <!-- 图文混排 -->
+    <string name="icon_preview">笔记标签预览</string>
+    <string name="icon_note_title">周四产品评审</string>
+    <string name="icon_note_desc">对齐新版 Demo 的交互细节，确认三种皮肤的默认参数。</string>
+    <string name="icon_pick">选择颜色 · Skin.None · 循环</string>
+    <string name="icon_pick_hint">点按中间项触发点击</string>
+    <string name="icon_log">事件日志</string>
+    <string name="icon_log_clear">清空</string>
+    <string name="icon_log_empty">滚动或点按上方滚轮，这里会显示回调。</string>
+
+    <!-- 弹窗 -->
+    <string name="dialog_title">资料设置</string>
+    <string name="dialog_user">示例用户</string>
+    <string name="dialog_user_hint">点按任意一项，从底部弹出滚轮</string>
+    <string name="dialog_builtin">库自带对话框</string>
+    <string name="dialog_note">上面三项把 WheelView 放进底部弹窗；「血型」直接调用库自带的 WheelViewDialog（居中，setDialogStyle 统一主色，点外部不关闭）。</string>
+    <string name="dialog_updated_format">已更新%1$s：%2$s</string>
 </resources>

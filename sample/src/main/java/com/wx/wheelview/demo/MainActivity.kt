@@ -16,177 +16,154 @@
 package com.wx.wheelview.demo
 
 import android.app.Activity
-import android.graphics.Color
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
-import com.wx.wheelview.adapter.ArrayWheelAdapter
-import com.wx.wheelview.adapter.SimpleWheelAdapter
-import com.wx.wheelview.common.WheelData
-import com.wx.wheelview.util.WheelUtils
+import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
+import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import com.wx.wheelview.widget.WheelView
-import com.wx.wheelview.widget.WheelViewDialog
+import java.util.Calendar
+import java.util.Locale
 
 /**
- * Demo
+ * 首页：年月日实时预览 + 示例入口 + 接入方式
  *
  * @author venshine
  */
-class MainActivity : Activity() {
+class MainActivity : BaseActivity() {
+
+    private lateinit var yearWheel: WheelView<String>
+    private lateinit var monthWheel: WheelView<String>
+    private lateinit var dayWheel: WheelView<String>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // targetSdk 35 起，Android 15+ 强制全面屏，内容需要避开状态栏和导航栏
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(android.R.id.content)) { view, insets ->
-            val bars = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
-            view.setPadding(bars.left, bars.top, bars.right, bars.bottom)
-            insets
-        }
-        // 浅色背景上使用深色状态栏图标
-        WindowCompat.getInsetsController(window, window.decorView).isAppearanceLightStatusBars = true
-
-        initWheel1()
-        initWheel2()
-        initWheel3()
+        findViewById<View>(R.id.source_button).setOnClickListener { openSource() }
+        initDateWheels()
+        initCards()
+        initInstall()
     }
 
     /**
-     * 联动WheelView
+     * 年 / 月 / 日：Holo 皮肤 + 附加文本，月和日循环滚动；切换年月时按天数重设「日」的数据
      */
-    private fun initWheel1() {
-        val style = WheelView.WheelViewStyle().apply {
-            selectedTextSize = 20
-            textSize = 16
-        }
+    private fun initDateWheels() {
+        val today = Calendar.getInstance()
+        val style = DemoWheels.style(this)
+        val years = (FIRST_YEAR..LAST_YEAR).map { it.toString() }
+        val yearIndex = (today.get(Calendar.YEAR) - FIRST_YEAR).coerceIn(0, years.lastIndex)
+        val monthIndex = today.get(Calendar.MONTH)
 
-        val mainWheelView = findViewById<WheelView<String>>(R.id.main_wheelview).apply {
-            setWheelAdapter(ArrayWheelAdapter(this@MainActivity))
-            skin = WheelView.Skin.Holo
-            setWheelData(MAIN_DATAS)
-            this.style = style
-        }
+        yearWheel = findViewById(R.id.year_wheel)
+        DemoWheels.setup(yearWheel, DemoWheelAdapter(this, numeric = true), years, style, selection = yearIndex)
+        yearWheel.setUnit("年", 32f)
 
-        val subWheelView = findViewById<WheelView<String>>(R.id.sub_wheelview).apply {
-            setWheelAdapter(ArrayWheelAdapter(this@MainActivity))
-            skin = WheelView.Skin.Holo
-            setWheelData(SUB_DATAS.getValue(MAIN_DATAS[mainWheelView.selection]))
-            this.style = style
-        }
-        mainWheelView.join(subWheelView)
-        mainWheelView.joinDatas(SUB_DATAS)
+        monthWheel = findViewById(R.id.month_wheel)
+        DemoWheels.setup(monthWheel, DemoWheelAdapter(this, numeric = true), (1..12).map(::pad), style,
+            loop = true, selection = monthIndex)
+        monthWheel.setUnit("月", 20f)
 
-        val childWheelView = findViewById<WheelView<String>>(R.id.child_wheelview).apply {
-            setWheelAdapter(ArrayWheelAdapter(this@MainActivity))
-            skin = WheelView.Skin.Holo
-            val city = SUB_DATAS.getValue(MAIN_DATAS[mainWheelView.selection])[subWheelView.selection]
-            setWheelData(CHILD_DATAS.getValue(city))
-            this.style = style
-        }
-        subWheelView.join(childWheelView)
-        subWheelView.joinDatas(CHILD_DATAS)
+        dayWheel = findViewById(R.id.day_wheel)
+        DemoWheels.setup(dayWheel, DemoWheelAdapter(this, numeric = true),
+            days(daysIn(FIRST_YEAR + yearIndex, monthIndex + 1)), style,
+            loop = true, selection = today.get(Calendar.DAY_OF_MONTH) - 1)
+        dayWheel.setUnit("日", 20f)
+
+        yearWheel.setOnWheelItemSelectedListener { _, _ -> onMonthChanged() }
+        monthWheel.setOnWheelItemSelectedListener { _, _ -> onMonthChanged() }
+        dayWheel.setOnWheelItemSelectedListener { _, _ -> updateDateText() }
     }
 
-    /**
-     * holo皮肤
-     */
-    private fun initWheel2() {
-        val style = WheelView.WheelViewStyle().apply {
-            selectedTextColor = Color.parseColor("#0288ce")
-            textColor = Color.GRAY
-            selectedTextSize = 20
-            selectedTextBold = true
+    private fun onMonthChanged() {
+        val year = FIRST_YEAR + yearWheel.currentPosition
+        val month = monthWheel.currentPosition + 1
+        if (yearWheel.currentPosition < 0 || month < 1) return
+        val count = daysIn(year, month)
+        if (count != dayWheel.wheelCount) {
+            val keep = dayWheel.currentPosition.coerceIn(0, count - 1)
+            // 与库内联动的 resetDataFromTop 一致：换数据后再定位
+            dayWheel.post {
+                dayWheel.setWheelData(days(count))
+                dayWheel.setSelection(keep)
+            }
         }
-        val wheels = listOf(
-            Triple(R.id.hour_wheelview, createNumbers(24), "时"),
-            Triple(R.id.minute_wheelview, createNumbers(60), "分"),
-            Triple(R.id.second_wheelview, createNumbers(60), "秒"),
-        )
-        for ((id, data, unit) in wheels) {
-            findViewById<WheelView<String>>(id).apply {
-                setWheelAdapter(ArrayWheelAdapter(this@MainActivity))
-                skin = WheelView.Skin.Holo
-                setWheelData(data)
-                this.style = style
-                setExtraText(unit, Color.parseColor("#0288ce"), 40, 70, true)
+        updateDateText()
+    }
+
+    private fun updateDateText() {
+        if (yearWheel.currentPosition < 0 || monthWheel.currentPosition < 0 || dayWheel.currentPosition < 0) return
+        val year = FIRST_YEAR + yearWheel.currentPosition
+        val month = monthWheel.currentPosition + 1
+        val day = (dayWheel.currentPosition + 1).coerceAtMost(daysIn(year, month))
+        findViewById<TextView>(R.id.date_text).text = "$year.${pad(month)}.${pad(day)}"
+        val calendar = Calendar.getInstance().apply { set(year, month - 1, day) }
+        findViewById<TextView>(R.id.weekday_text).text =
+            getString(R.string.weekday_format, WEEKDAYS[calendar.get(Calendar.DAY_OF_WEEK) - 1])
+    }
+
+    private fun initCards() {
+        findViewById<View>(R.id.card_styles).setOnClickListener { open(StyleLabActivity::class.java) }
+        bindCard(R.id.card_linkage, R.drawable.ic_link, R.string.demo_linkage, R.string.demo_linkage_desc,
+            LinkageActivity::class.java)
+        bindCard(R.id.card_time, R.drawable.ic_clock, R.string.demo_time, R.string.demo_time_desc,
+            TimeActivity::class.java)
+        bindCard(R.id.card_icon_text, R.drawable.ic_image_text, R.string.demo_icon_text, R.string.demo_icon_text_desc,
+            IconTextActivity::class.java)
+        bindCard(R.id.card_dialog, R.drawable.ic_sheet, R.string.demo_dialog, R.string.demo_dialog_desc,
+            DialogActivity::class.java)
+    }
+
+    private fun bindCard(@IdRes id: Int, @DrawableRes icon: Int, @StringRes title: Int, @StringRes desc: Int,
+                         target: Class<out Activity>) {
+        val card = findViewById<View>(id)
+        card.findViewById<ImageView>(R.id.card_icon).setImageResource(icon)
+        card.findViewById<TextView>(R.id.card_title).setText(title)
+        card.findViewById<TextView>(R.id.card_desc).setText(desc)
+        card.setOnClickListener { open(target) }
+    }
+
+    private fun initInstall() {
+        val code = "// settings.gradle\nmaven { url = 'https://jitpack.io' }\n\n// build.gradle\nimplementation '$DEPENDENCY'"
+        findViewById<TextView>(R.id.install_code).text =
+            CodeHighlighter.highlight(this, code, listOf("implementation", "maven"))
+        findViewById<TextView>(R.id.copy_dependency).apply {
+            setStartIcon(tintedIcon(R.drawable.ic_copy, colorOf(R.color.text), 16f))
+            setOnClickListener {
+                copyToClipboard("implementation '$DEPENDENCY'")
+                flashCopied(R.string.home_copied_dependency, R.string.home_copy_dependency)
             }
         }
     }
 
-    /**
-     * common皮肤、图文混排无皮肤、自定义布局
-     */
-    private fun initWheel3() {
-        findViewById<WheelView<String>>(R.id.common_wheelview).apply {
-            setWheelAdapter(ArrayWheelAdapter(this@MainActivity))
-            skin = WheelView.Skin.Common
-            setWheelData(createArrays())
-        }
+    private fun open(target: Class<out Activity>) = startActivity(Intent(this, target))
 
-        findViewById<WheelView<WheelData>>(R.id.simple_wheelview).apply {
-            setWheelAdapter(SimpleWheelAdapter(this@MainActivity))
-            setWheelSize(5)
-            setWheelData(createDatas())
-            skin = WheelView.Skin.None
-            setLoop(true)
-            setWheelClickable(true)
-            setOnWheelItemClickListener { position, _ -> WheelUtils.log("click:$position") }
-            setOnWheelItemSelectedListener { position, _ -> WheelUtils.log("selected:$position") }
-        }
-
-        findViewById<WheelView<String>>(R.id.my_wheelview).apply {
-            setWheelAdapter(MyWheelAdapter(this@MainActivity))
-            setWheelSize(5)
-            skin = WheelView.Skin.Holo
-            setWheelData(createArrays())
-            setSelection(2)
-            setClickToPosition(true)
-            style = WheelView.WheelViewStyle().apply {
-                backgroundColor = Color.YELLOW
-                textColor = Color.DKGRAY
-                selectedTextColor = Color.GREEN
-            }
+    private fun openSource() {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(SOURCE_URL)))
+        } catch (e: ActivityNotFoundException) {
+            Toast.makeText(this, SOURCE_URL, Toast.LENGTH_LONG).show()
         }
     }
-
-    fun showDialog(view: View) {
-        WheelViewDialog<String>(this)
-            .setTitle("wheelview dialog")
-            .setItems(createArrays())
-            .setButtonText("确定")
-            .setDialogStyle(Color.parseColor("#6699ff"))
-            .setCount(5)
-            .show()
-    }
-
-    private fun createNumbers(count: Int): List<String> = (0 until count).map { "%02d".format(it) }
-
-    private fun createArrays(): List<String> = (0 until 20).map { "item$it" }
-
-    private fun createDatas(): List<WheelData> =
-        (0 until 20).map { WheelData(R.mipmap.ic_launcher, "%02d".format(it)) }
 
     private companion object {
-        val MAIN_DATAS = listOf("黑龙江", "吉林", "辽宁")
+        const val FIRST_YEAR = 2020
+        const val LAST_YEAR = 2035
+        const val DEPENDENCY = "com.github.venshine:WheelView:2.1.0"
+        const val SOURCE_URL = "https://github.com/venshine/WheelView"
+        val WEEKDAYS = arrayOf("日", "一", "二", "三", "四", "五", "六")
 
-        val SUB_DATAS: HashMap<String, List<String>> = hashMapOf(
-            "黑龙江" to listOf("哈尔滨", "齐齐哈尔", "大庆"),
-            "吉林" to listOf("长春", "吉林"),
-            "辽宁" to listOf("沈阳", "大连", "鞍山", "抚顺"),
-        )
+        fun pad(value: Int) = String.format(Locale.US, "%02d", value)
 
-        val CHILD_DATAS: HashMap<String, List<String>> = hashMapOf(
-            "哈尔滨" to listOf("道里区", "道外区", "南岗区", "香坊区"),
-            "齐齐哈尔" to listOf("龙沙区", "建华区", "铁锋区"),
-            "大庆" to listOf("红岗区", "大同区"),
-            "长春" to listOf("南关区", "朝阳区"),
-            "吉林" to listOf("龙潭区"),
-            "沈阳" to listOf("和平区", "皇姑区", "大东区", "铁西区"),
-            "大连" to listOf("中山区", "金州区"),
-            "鞍山" to listOf("铁东区", "铁西区"),
-            "抚顺" to listOf("新抚区", "望花区", "顺城区"),
-        )
+        fun days(count: Int) = (1..count).map(::pad)
+
+        fun daysIn(year: Int, month: Int): Int =
+            Calendar.getInstance().apply { set(year, month - 1, 1) }.getActualMaximum(Calendar.DAY_OF_MONTH)
     }
 }

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="page_padding">20dp</dimen>
+    <!-- 滚轮上下渐隐的高度：约等于两个条目高度，正好盖住选中项上下两行 -->
+    <dimen name="wheel_fade">80dp</dimen>
+</resources>

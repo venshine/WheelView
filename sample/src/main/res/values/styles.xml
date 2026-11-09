@@ -1,11 +1,170 @@
 <resources>
 
-    <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+    <!-- DayNight：颜色随 values / values-night 切换，默认浅色由 DemoTheme 控制 -->
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent</item>
+        <item name="colorPrimaryDark">@color/bg</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="colorControlActivated">@color/accent</item>
+        <item name="colorControlNormal">@color/text_dim</item>
+        <item name="colorControlHighlight">@color/ripple</item>
+        <item name="android:windowBackground">@color/bg</item>
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:textColorSecondary">@color/text_muted</item>
+        <!-- 库自带的 WheelViewDialog 是系统 AlertDialog，滚轮背景固定为白色，所以始终用浅色对话框 -->
+        <item name="android:alertDialogTheme">@style/WheelDialogTheme</item>
+    </style>
+
+    <style name="WheelDialogTheme" parent="android:Theme.Material.Light.Dialog.Alert" />
+
+    <!-- 底部弹窗：普通 Dialog，不依赖 Material Components；非浮动窗口才能铺到导航栏下方 -->
+    <style name="BottomWheelDialog" parent="Theme.AppCompat.DayNight.Dialog">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowAnimationStyle">@style/BottomWheelDialog.Animation</item>
+    </style>
+
+    <style name="BottomWheelDialog.Animation" parent="">
+        <item name="android:windowEnterAnimation">@anim/sheet_in</item>
+        <item name="android:windowExitAnimation">@anim/sheet_out</item>
+    </style>
+
+    <!-- 文字样式 -->
+    <style name="Text" parent="">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="Text.H1">
+        <item name="android:textSize">34sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:lineSpacingMultiplier">1.12</item>
+    </style>
+
+    <style name="Text.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Section">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.Body">
+        <item name="android:textColor">@color/text_muted</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+    </style>
+
+    <style name="Text.Note">
+        <item name="android:textColor">@color/text_dim</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+    </style>
+
+    <style name="Text.Caption">
+        <item name="android:textColor">@color/text_dim</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+
+    <style name="Text.CardTitle">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Text.CardDesc">
+        <item name="android:textColor">@color/text_muted</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingMultiplier">1.3</item>
+    </style>
+
+    <style name="Text.Mono">
+        <item name="android:fontFamily">@font/jetbrains_mono</item>
+        <item name="android:textColor">@color/code_text</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="Text.Mono.Chip">
+        <item name="android:textColor">@color/accent_ink</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:background">@drawable/bg_chip</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingTop">4dp</item>
+        <item name="android:paddingBottom">4dp</item>
+    </style>
+
+    <style name="Text.Mono.Code">
+        <item name="android:background">@drawable/bg_code</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:lineSpacingMultiplier">1.45</item>
+        <item name="android:textSize">11.5sp</item>
+    </style>
+
+    <style name="Text.Numeric">
+        <item name="android:fontFamily">@font/space_grotesk</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Button" parent="">
+        <item name="android:layout_height">54dp</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/on_accent</item>
+        <item name="android:background">@drawable/bg_button_accent</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+    <style name="Button.Outline">
+        <item name="android:textColor">@color/text</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:background">@drawable/bg_button_outline</item>
+    </style>
+
+    <style name="Button.Small" parent="Button.Outline">
+        <item name="android:layout_height">36dp</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/text_sub</item>
+        <item name="android:paddingStart">12dp</item>
+        <item name="android:paddingEnd">12dp</item>
+    </style>
+
+    <style name="IconButton" parent="">
+        <item name="android:layout_width">44dp</item>
+        <item name="android:layout_height">44dp</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="tint">@color/text_sub</item>
+    </style>
+
+    <style name="IconButton.Boxed">
+        <item name="android:background">@drawable/bg_button_outline</item>
+    </style>
+
+    <style name="Card" parent="">
+        <item name="android:background">@drawable/bg_card</item>
+    </style>
+
+    <style name="WheelFade" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/wheel_fade</item>
+        <item name="android:importantForAccessibility">no</item>
+    </style>
+
+    <style name="WheelFade.Top">
+        <item name="android:layout_gravity">top</item>
+        <item name="android:background">@drawable/wheel_fade_top</item>
+    </style>
+
+    <style name="WheelFade.Bottom">
+        <item name="android:layout_gravity">bottom</item>
+        <item name="android:background">@drawable/wheel_fade_bottom</item>
     </style>
 
 </resources>
