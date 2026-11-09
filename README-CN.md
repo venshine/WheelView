@@ -6,7 +6,7 @@
 
 Android滚轮控件，基于ListView实现，可以自定义样式。
 
-[**下载示例 APK**](https://github.com/venshine/WheelView/releases/download/2.1.0/WheelView-sample-2.1.0.apk)
+[**下载示例 APK**](https://github.com/venshine/WheelView/releases/download/2.1.1/WheelView-sample-2.1.1.apk)
 
 Features
 --
@@ -50,7 +50,7 @@ dependencyResolutionManagement {
 ```
 2. 在模块的 `build.gradle` 中添加依赖：
 ```groovy
-implementation 'com.github.venshine:WheelView:2.1.0'
+implementation 'com.github.venshine:WheelView:2.1.1'
 ```
 
 ##### Gradle Kotlin DSL:
@@ -65,7 +65,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.venshine:WheelView:2.1.0")
+implementation("com.github.venshine:WheelView:2.1.1")
 ```
 
 > 2.0.0 起改为通过 JitPack 发布，旧坐标 `com.wx.wheelview:wheelview` 已无法下载。

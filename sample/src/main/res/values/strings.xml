@@ -5,7 +5,6 @@
     <string name="theme_to_dark">切换到深色模式</string>
     <string name="theme_to_light">切换到浅色模式</string>
     <string name="view_source">查看源码</string>
-    <string name="version_chip">v2.1.0</string>
     <string name="copied">已复制</string>
     <string name="cancel">取消</string>
     <string name="confirm">确定</string>

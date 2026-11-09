@@ -42,10 +42,16 @@ class MainActivity : BaseActivity() {
     private lateinit var monthWheel: WheelView<String>
     private lateinit var dayWheel: WheelView<String>
 
+    /** 示例 App 与库同版本发布，版本号只在 sample/build.gradle 的 versionName 维护一处 */
+    private val version: String by lazy {
+        packageManager.getPackageInfo(packageName, 0).versionName.orEmpty()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         findViewById<View>(R.id.source_button).setOnClickListener { openSource() }
+        findViewById<TextView>(R.id.version_chip).text = "v$version"
         initDateWheels()
         initCards()
         initInstall()
@@ -130,13 +136,14 @@ class MainActivity : BaseActivity() {
     }
 
     private fun initInstall() {
-        val code = "// settings.gradle\nmaven { url = 'https://jitpack.io' }\n\n// build.gradle\nimplementation '$DEPENDENCY'"
+        val dependency = "com.github.venshine:WheelView:$version"
+        val code = "// settings.gradle\nmaven { url = 'https://jitpack.io' }\n\n// build.gradle\nimplementation '$dependency'"
         findViewById<TextView>(R.id.install_code).text =
             CodeHighlighter.highlight(this, code, listOf("implementation", "maven"))
         findViewById<TextView>(R.id.copy_dependency).apply {
             setStartIcon(tintedIcon(R.drawable.ic_copy, colorOf(R.color.text), 16f))
             setOnClickListener {
-                copyToClipboard("implementation '$DEPENDENCY'")
+                copyToClipboard("implementation '$dependency'")
                 flashCopied(R.string.home_copied_dependency, R.string.home_copy_dependency)
             }
         }
@@ -155,7 +162,6 @@ class MainActivity : BaseActivity() {
     private companion object {
         const val FIRST_YEAR = 2020
         const val LAST_YEAR = 2035
-        const val DEPENDENCY = "com.github.venshine:WheelView:2.1.0"
         const val SOURCE_URL = "https://github.com/venshine/WheelView"
         val WEEKDAYS = arrayOf("日", "一", "二", "三", "四", "五", "六")
 

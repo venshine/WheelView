@@ -38,6 +38,7 @@
                 android:textSize="19sp" />
 
             <TextView
+                android:id="@+id/version_chip"
                 style="@style/Text.Mono"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -47,7 +48,6 @@
                 android:paddingTop="3dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="3dp"
-                android:text="@string/version_chip"
                 android:textColor="@color/text_muted"
                 android:textSize="11sp" />
 
