@@ -23,9 +23,17 @@ Features
 
 ScreenShot
 --
-![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot.gif)
-![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot1.png)
-![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot2.png)
+<img src="screenshot/demo.gif" width="300" alt="WheelView 演示" />
+
+| 首页 | 深色模式 | 三级联动 | 时间与单位 |
+|:---:|:---:|:---:|:---:|
+| <img src="screenshot/home.png" width="200" /> | <img src="screenshot/home_dark.png" width="200" /> | <img src="screenshot/linkage.png" width="200" /> | <img src="screenshot/time.png" width="200" /> |
+
+| 样式实验室 | 图文混排 | 弹窗选择 |
+|:---:|:---:|:---:|
+| <img src="screenshot/style_lab.png" width="200" /> | <img src="screenshot/icon_text.png" width="200" /> | <img src="screenshot/dialog.png" width="200" /> |
+
+以上界面来自 [示例 App](sample)，支持浅色和深色两套主题。
 
 Usage
 --
@@ -202,6 +210,14 @@ History
 About
 --
 * Email：venshine.cn@gmail.com
+
+Credits
+--
+示例 App 打包了以下字体，均为 [SIL Open Font License 1.1](https://openfontlicense.org) 协议（协议原文见 [`sample/licenses/`](sample/licenses)）：
+* [Space Grotesk](https://github.com/floriankarsten/space-grotesk)：Copyright 2020 The Space Grotesk Project Authors
+* [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono)：Copyright 2020 The JetBrains Mono Project Authors
+
+库本身不包含任何字体。
 
 License
 --

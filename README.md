@@ -23,9 +23,17 @@ Features
 
 ScreenShot
 --
-![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot.gif)
-![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot1.png)
-![](https://github.com/venshine/WheelView/blob/master/screenshot/screenshot2.png)
+<img src="screenshot/demo.gif" width="300" alt="WheelView demo" />
+
+| Home | Dark mode | Linkage | Time & units |
+|:---:|:---:|:---:|:---:|
+| <img src="screenshot/home.png" width="200" /> | <img src="screenshot/home_dark.png" width="200" /> | <img src="screenshot/linkage.png" width="200" /> | <img src="screenshot/time.png" width="200" /> |
+
+| Style lab | Image + text | Dialogs |
+|:---:|:---:|:---:|
+| <img src="screenshot/style_lab.png" width="200" /> | <img src="screenshot/icon_text.png" width="200" /> | <img src="screenshot/dialog.png" width="200" /> |
+
+The [sample app](sample) shows every feature above, with light and dark themes.
 
 Usage
 --
@@ -202,6 +210,14 @@ History
 About
 --
 * Email: venshine.cn@gmail.com
+
+Credits
+--
+The sample app bundles these fonts, both licensed under the [SIL Open Font License 1.1](https://openfontlicense.org) (license texts in [`sample/licenses/`](sample/licenses)):
+* [Space Grotesk](https://github.com/floriankarsten/space-grotesk): Copyright 2020 The Space Grotesk Project Authors
+* [JetBrains Mono](https://github.com/JetBrains/JetBrainsMono): Copyright 2020 The JetBrains Mono Project Authors
+
+The library itself bundles no fonts.
 
 License
 --
