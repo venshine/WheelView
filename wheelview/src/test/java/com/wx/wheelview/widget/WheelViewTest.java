@@ -108,6 +108,27 @@ public class WheelViewTest {
         assertEquals("e", centerText(wheel).getText().toString());
     }
 
+    // 运行时从非循环切到循环：非循环时首尾的占位行被隐藏，这些条目被复用到循环位置后必须重新显示，
+    // 否则滚动停下时会空掉一行
+    @Test
+    public void switchingToLoopShowsRecycledPlaceholderRows() {
+        WheelView<String> wheel = createWheel();
+        wheel.setWheelSize(5);
+        activity.setContentView(wheel, new ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        layout();
+        // 非循环且选中第一项时，最上面两行是隐藏的占位行
+        assertEquals(View.INVISIBLE, wheel.getChildAt(0).getVisibility());
+
+        wheel.setLoop(true);
+        layout();
+
+        assertTrue(wheel.getChildCount() >= 5);
+        for (int i = 0; i < wheel.getChildCount(); i++) {
+            assertEquals("第 " + i + " 行应可见", View.VISIBLE, wheel.getChildAt(i).getVisibility());
+        }
+    }
+
     // 循环模式下的 setSelection
     @Test
     public void setSelectionInLoopMode() {

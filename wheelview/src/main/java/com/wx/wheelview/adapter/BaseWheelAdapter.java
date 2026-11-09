@@ -116,13 +116,8 @@ public abstract class BaseWheelAdapter<T> extends BaseAdapter {
         } else {
             view = bindView(position, convertView, parent);
         }
-        if (!mLoop) {
-            if (position == -1) {
-                view.setVisibility(View.INVISIBLE);
-            } else {
-                view.setVisibility(View.VISIBLE);
-            }
-        }
+        // 循环模式也要显式设为可见：运行时从非循环切到循环后，被隐藏的首尾占位行会被复用到循环位置
+        view.setVisibility(position == -1 ? View.INVISIBLE : View.VISIBLE);
         if (mOnClickListener != null) {
             final int finalPosition = position;
             view.setOnClickListener(v -> mOnClickListener.onPositionClick(finalPosition));
