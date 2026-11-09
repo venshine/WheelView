@@ -1,37 +1,37 @@
-# 封板参数（release-seal）
+# Release parameters (release-seal)
 
-通用步骤见全局 `release-seal` skill，本文件只写本项目的参数和例外。
+The generic steps live in the global `release-seal` skill. This file only records the parameters and exceptions for this project.
 
-## 版本号
+## Version
 
-- 语义化版本 `X.Y.Z`：只修 bug 升 Z，新增 API 或样式能力升 Y。
-- **本项目在发版时才改版本号**，封板后不提前升到下一版（跳过 skill 的「升版本号」一步）。
-- 发版提交里一起改这些位置（`grep -rn "<旧版本号>" wheelview/build.gradle sample/build.gradle README.md README-CN.md` 应全部命中）：
-  - `wheelview/build.gradle` 的 `publishing` → `version`
-  - `sample/build.gradle` 的 `versionName`（`versionCode` 不改）；示例 App 首页的版本标签和「复制依赖」坐标都从它读取，不用另改
-  - `README.md`、`README-CN.md` 里的依赖坐标（Groovy、Kotlin 两处）和「下载示例 APK」链接
+- Semantic versioning `X.Y.Z`: bump Z for bug fixes only, bump Y for new APIs or style options.
+- **The version is bumped at release time.** Do not bump to the next version after sealing (skip the skill's "bump version" step).
+- Update all of these in the release commit (`grep -rn "<old version>" wheelview/build.gradle sample/build.gradle README.md README-CN.md` should hit every one):
+  - `version` under `publishing` in `wheelview/build.gradle`
+  - `versionName` in `sample/build.gradle` (leave `versionCode` unchanged). The sample's version badge and "copy dependency" coordinate read from it, so nothing else in the sample needs editing.
+  - The dependency coordinates (Groovy and Kotlin) and the "download sample APK" link in `README.md` and `README-CN.md`
 
-## 发版前验证
+## Pre-release checks
 
 ```bash
 ./gradlew :wheelview:testDebugUnitTest :wheelview:assembleRelease :sample:assembleDebug :sample:testDebugUnitTest
 ```
 
-库的改动还需要在真机上复测受影响的场景。
+Library changes must also be re-tested on a real device for the affected scenarios.
 
 ## Tag
 
-- 名称就是版本号，不加 `v`：`2.1.1`
-- annotated tag，信息为 `WheelView X.Y.Z`，打在发版提交上，推送到 `origin`
-- JitPack 按 tag 构建，坐标 `com.github.venshine:WheelView:X.Y.Z`；推送后检查 `https://jitpack.io/api/builds/com.github.venshine/WheelView/X.Y.Z`
+- The tag name is the bare version, without a `v` prefix: `2.1.1`
+- Annotated tag with the message `WheelView X.Y.Z`, created on the release commit and pushed to `origin`
+- JitPack builds from the tag; the coordinate is `com.github.venshine:WheelView:X.Y.Z`. After pushing, check `https://jitpack.io/api/builds/com.github.venshine/WheelView/X.Y.Z`
 
 ## GitHub Release
 
-- 标题为版本号，正文用中文，分「新增 / 修复 / 示例 App / 接入」小节，按实际内容取舍
-- 附件：示例 APK，文件名 `WheelView-sample-X.Y.Z.apk`
-  - 构建：`./gradlew :sample:assembleDebug`，产物在 `sample/build/outputs/apk/debug/sample-debug.apk`
-  - 用本机 debug 证书签名（SHA-256 `bc4b28be…1433982`），与历史版本一致，用户可覆盖安装；换机器发版时先核对证书，不一致会导致无法覆盖安装
+- Title is the version number. Notes are written in English, with sections such as "Added / Fixed / Sample app / Installation", kept or dropped as the release requires
+- Attachment: the sample APK, named `WheelView-sample-X.Y.Z.apk`
+  - Build: `./gradlew :sample:assembleDebug`; output at `sample/build/outputs/apk/debug/sample-debug.apk`
+  - Signed with the local debug certificate (SHA-256 `bc4b28be…1433982`), the same as previous releases, so users can install it over an older version. When releasing from another machine, verify the certificate first; a different one prevents in-place upgrades
 
-## 后续
+## Afterwards
 
-- 没有产品文档和 ROADMAP，版本说明以 GitHub Release 为准，无需同步其他文档
+- There is no product doc or ROADMAP; the GitHub Release is the source of truth for release notes, so no other docs need syncing
