@@ -17,7 +17,7 @@ Features
 * Extra text next to the selected item
 * Configurable number of visible items
 * Linked wheels (e.g. province / city)
-* Works inside scrolling containers ([NestedScrollView](https://github.com/venshine/WheelView/blob/master/wheelview/src/main/java/com/wx/wheelview/widget/NestedScrollView.java))
+* Works inside scrolling containers ([NestedScrollView](https://github.com/venshine/WheelView/blob/master/wheelview/src/main/java/com/wx/wheelview/widget/NestedScrollView.kt))
 * Wheel dialog
 * Click events on the selected item
 
@@ -71,10 +71,11 @@ implementation("com.github.venshine:WheelView:2.1.1")
 > Since 2.0.0 the library is published via JitPack. The old coordinate `com.wx.wheelview:wheelview` can no longer be downloaded.
 > The color fields of `WheelViewStyle` (`backgroundColor`, `holoBorderColor`, `textColor`, `selectedTextColor`) are now `Integer`. `null` means the default color, so `Color.WHITE` now works.
 > Since 2.0.2, when switching the main wheel changes the data of a linked sub wheel, the sub wheel goes back to its first item (it used to keep its position).
+> Since 3.0.0 the library is written in Kotlin and depends on `kotlin-stdlib` 2.2.10. The Java API is unchanged, so existing Java code compiles as before. Kotlin projects need Kotlin 2.1 or later.
 
 Demo
 --
-The library is written in Java and can be called directly from both Java and Kotlin. It adds no Kotlin dependency to your project.
+The library is written in Kotlin and keeps the Java API of earlier versions, so it can be called directly from both Java and Kotlin.
 
 ##### Kotlin:
 ```kotlin

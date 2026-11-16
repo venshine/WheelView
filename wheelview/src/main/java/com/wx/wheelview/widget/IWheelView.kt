@@ -13,85 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wx.wheelview.widget;
+package com.wx.wheelview.widget
 
-import androidx.annotation.NonNull;
-
-import com.wx.wheelview.adapter.BaseWheelAdapter;
-
-import java.util.HashMap;
-import java.util.List;
+import com.wx.wheelview.adapter.BaseWheelAdapter
 
 /**
  * 滚轮抽象接口
  *
  * @author venshine
  */
-public interface IWheelView<T> {
-
-    /**
-     * 滚轮数据是否循环，默认不循环
-     */
-    boolean LOOP = false;
-
-    /**
-     * 滚轮默认数量
-     */
-    int WHEEL_SIZE = 3;
-
-    /**
-     * 滚轮选中刻度是否可点击
-     */
-    boolean CLICKABLE = false;
+@JvmSuppressWildcards
+interface IWheelView<T> {
 
     /**
      * 设置滚轮选中刻度是否可点击
      *
      * @param clickable
      */
-    void setWheelClickable(boolean clickable);
+    fun setWheelClickable(clickable: Boolean)
 
     /**
      * 设置滚轮是否循环滚动
      *
      * @param loop
      */
-    void setLoop(boolean loop);
+    fun setLoop(loop: Boolean)
 
     /**
      * 设置滚轮个数
      *
      * @param wheelSize
      */
-    void setWheelSize(int wheelSize);
+    fun setWheelSize(wheelSize: Int)
 
     /**
      * 设置滚轮数据
      *
      * @param list
      */
-    void setWheelData(@NonNull List<T> list);
+    fun setWheelData(list: List<T>?)
 
     /**
      * 设置滚轮数据源适配器
      *
      * @param adapter
      */
-    void setWheelAdapter(@NonNull BaseWheelAdapter<T> adapter);
+    fun setWheelAdapter(adapter: BaseWheelAdapter<T>)
 
     /**
      * 连接副WheelView
      *
      * @param wheelView
      */
-    void join(@NonNull WheelView wheelView);
+    fun join(wheelView: WheelView<*>?)
 
     /**
      * 副WheelView数据
      *
      * @param map
      */
-    void joinDatas(@NonNull HashMap<String, List<T>> map);
+    fun joinDatas(map: HashMap<String, List<T>>?)
 
+    companion object {
+        /**
+         * 滚轮数据是否循环，默认不循环
+         */
+        const val LOOP = false
 
+        /**
+         * 滚轮默认数量
+         */
+        const val WHEEL_SIZE = 3
+
+        /**
+         * 滚轮选中刻度是否可点击
+         */
+        const val CLICKABLE = false
+    }
 }

@@ -13,28 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.wx.wheelview.common;
+package com.wx.wheelview.adapter
+
+import android.content.Context
+import android.view.View
+import android.view.ViewGroup
+import com.wx.wheelview.common.WheelData
+import com.wx.wheelview.widget.WheelItem
 
 /**
- * 滚轮异常类
+ * 滚轮图片和文本适配器
  *
  * @author venshine
  */
-public class WheelViewException extends RuntimeException {
+open class SimpleWheelAdapter(private val mContext: Context) : BaseWheelAdapter<WheelData>() {
 
-    public WheelViewException() {
-        super();
-    }
-
-    public WheelViewException(String detailMessage) {
-        super(detailMessage);
-    }
-
-    public WheelViewException(String detailMessage, Throwable throwable) {
-        super(detailMessage, throwable);
-    }
-
-    public WheelViewException(Throwable throwable) {
-        super(throwable);
+    public override fun bindView(position: Int, convertView: View?, parent: ViewGroup): View? {
+        val item = (convertView ?: WheelItem(mContext)) as WheelItem
+        item.setImage(mList[position].id)
+        item.setText(mList[position].name)
+        return item
     }
 }

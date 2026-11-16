@@ -17,7 +17,7 @@ Features
 * 支持选中项添加附加文本
 * 支持设置滚轮刻度
 * 支持联动功能
-* 支持嵌入滚动控件中([NestedScrollView](https://github.com/venshine/WheelView/blob/master/wheelview/src/main/java/com/wx/wheelview/widget/NestedScrollView.java))
+* 支持嵌入滚动控件中([NestedScrollView](https://github.com/venshine/WheelView/blob/master/wheelview/src/main/java/com/wx/wheelview/widget/NestedScrollView.kt))
 * 支持滚轮对话框
 * 支持滚轮选中项点击事件
 
@@ -71,10 +71,11 @@ implementation("com.github.venshine:WheelView:2.1.1")
 > 2.0.0 起改为通过 JitPack 发布，旧坐标 `com.wx.wheelview:wheelview` 已无法下载。
 > `WheelViewStyle` 的颜色字段（`backgroundColor`、`holoBorderColor`、`textColor`、`selectedTextColor`）改为 `Integer`，`null` 表示使用默认颜色，现在可以正常设置 `Color.WHITE`。
 > 2.0.2 起，联动时主滚轮切换导致副滚轮数据变化，副滚轮会回到第一项（之前保持原位置）。
+> 3.0.0 起，库改用 Kotlin 编写，依赖 `kotlin-stdlib` 2.2.10。Java API 保持不变，原有 Java 代码无需修改即可编译；Kotlin 项目需 Kotlin 2.1 及以上。
 
 Demo
 --
-库本身用 Java 编写，Java 和 Kotlin 都可以直接调用，不会给项目额外引入 Kotlin 依赖。
+库本身用 Kotlin 编写，保留了之前版本的 Java API，Java 和 Kotlin 都可以直接调用。
 
 ##### Kotlin:
 ```kotlin
