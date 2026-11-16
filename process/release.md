@@ -9,7 +9,7 @@ The generic steps live in the global `release-seal` skill. This file only record
 - Update all of these in the release commit (`grep -rn "<old version>" wheelview/build.gradle sample/build.gradle README.md README-CN.md` should hit every one):
   - `version` under `publishing` in `wheelview/build.gradle`
   - `versionName` in `sample/build.gradle` (leave `versionCode` unchanged). The sample's version badge and "copy dependency" coordinate read from it, so nothing else in the sample needs editing.
-  - The dependency coordinates (Groovy and Kotlin) and the "download sample APK" link in `README.md` and `README-CN.md`
+  - The dependency coordinates (Groovy and Kotlin) in `README.md` and `README-CN.md` (the README has no sample APK link; the APK is only attached to the GitHub Release)
 
 ## Pre-release checks
 

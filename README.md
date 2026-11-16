@@ -6,8 +6,6 @@ English | [简体中文](README-CN.md)
 
 A wheel picker for Android, built on ListView, with customizable styles.
 
-[**Download the sample APK**](https://github.com/venshine/WheelView/releases/download/2.1.1/WheelView-sample-2.1.1.apk)
-
 Features
 --
 * Customizable wheel style
@@ -50,7 +48,7 @@ dependencyResolutionManagement {
 ```
 2. Add the dependency to your module's `build.gradle`:
 ```groovy
-implementation 'com.github.venshine:WheelView:2.1.1'
+implementation 'com.github.venshine:WheelView:3.0.0'
 ```
 
 ##### Gradle Kotlin DSL:
@@ -65,7 +63,7 @@ dependencyResolutionManagement {
 }
 
 // build.gradle.kts
-implementation("com.github.venshine:WheelView:2.1.1")
+implementation("com.github.venshine:WheelView:3.0.0")
 ```
 
 > Since 2.0.0 the library is published via JitPack. The old coordinate `com.wx.wheelview:wheelview` can no longer be downloaded.
